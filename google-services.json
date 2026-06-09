@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1003313411119",
+    "project_id": "codeneptune-66e72",
+    "storage_bucket": "codeneptune-66e72.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003313411119:android:1b7065e93e5fc67ed602da",
+        "android_client_info": {
+          "package_name": "com.caresure.warehouse"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnyZnXO4MvSaM6z7kRx_1hghMTia_WpLM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003313411119:android:885905154b380776d602da",
+        "android_client_info": {
+          "package_name": "com.codeneptune.caresure"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnyZnXO4MvSaM6z7kRx_1hghMTia_WpLM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

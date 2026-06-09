@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  :root {
+    /* Main Theme Colors */
+    --primary: #0F7635;
+    --text-deep: #1A1A1A;
+    --text-main: #222222;
+    --text-secondary: #6A6A6A;
+    --text-muted: #969696;
+    
+    /* UI Elements */
+    --border: #E6E6E6;
+    --border-light: #EEEEEE;
+    --bg-main: #F9F9F9;
+    --bg-gray: #F2F2F2;
+    --blue-info: #2196F3;
+    
+    /* Status Colors */
+    --warning: #D9A95D;
+    --warning-bg: #F5F2DC;
+    --success-bg: #E8F4EC;
+    --success-border: #A0C9AF;
+    --partial-bg: #FDF2E2;
+    --partial-border: #EAD2AF;
+    --completed-bg: #E8F4EC;
+    --completed-border: #A0C9AF;
+
+    /* Legacy variables (keeping for compatibility during migration) */
+    --color-primary: #0F7635;
+    --color-secondary: #106132;
+    --color-accent: #FACA15;
+    --color-background: #F8F9FA;
+    --color-card: #FFFFFF;
+    --color-text: #1A1A1A;
+    --color-border: #E5E7EB;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply bg-blue-500 px-4 py-2 rounded text-center;
+  }
+
+  .btn-container {
+    @apply ;
+  }
+
+}
