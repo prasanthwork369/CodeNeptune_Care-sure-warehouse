@@ -84,12 +84,16 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ item, batches, onToggleSt
                             <Text style={{ color: colors.text.DEFAULT }} className="font-inter-bold text-[18px] leading-6">
                                 {item.name}
                             </Text>
-                            <Text style={{ color: colors.text.secondary }} className="text-[13px] font-inter mt-0.5">
-                                {item.manufacturer || 'Pfizer Inc.'}
-                            </Text>
-                            <Text style={{ color: colors.text.DEFAULT }} className="text-[12px] font-inter mt-0.5">
-                                {item.description || '15 tablets per strip'}
-                            </Text>
+                            {!!item.manufacturer && (
+                                <Text style={{ color: colors.text.secondary }} className="text-[13px] font-inter mt-0.5">
+                                    {item.manufacturer}
+                                </Text>
+                            )}
+                            {!!item.description && (
+                                <Text style={{ color: colors.text.DEFAULT }} className="text-[12px] font-inter mt-0.5">
+                                    {item.description}
+                                </Text>
+                            )}
                         </View>
 
                         {/* Status icons */}
@@ -196,8 +200,8 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ item, batches, onToggleSt
                                 </View>
                             </View>
 
-                            {/* Qty + Edit */}
-                            <View className="flex-row justify-between items-end">
+                            {/* Qty */}
+                            <View className="flex-row justify-between items-end mt-1">
                                 <View className="flex-row items-baseline">
                                     <Text style={{ color: qtyColor }} className="text-[44px] font-inter-bold">
                                         {isPartial ? item.pickedQty : item.requiredQty}
@@ -206,47 +210,41 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ item, batches, onToggleSt
                                         Units Required
                                     </Text>
                                 </View>
-
-                                {!isCompleted && !isPartial && (
-                                    <View style={{ zIndex: 1000 }}>
-                                        <TouchableOpacity
-                                            onPress={() => setShowOptions(!showOptions)}
-                                            style={{ backgroundColor: '#DCDEDC' }}
-                                            className="flex-row items-center px-3 py-2 rounded-[8px]"
-                                        >
-                                            <Text className="text-[13px] font-inter-medium text-[#222222] mr-1">Edit</Text>
-                                            <icons.arrow_drop_down width={12} height={12} fill="#222222" />
-                                        </TouchableOpacity>
-
-                                        {showOptions && (
-                                            <View style={{
-                                                position: 'absolute', top: 38, right: 0,
-                                                backgroundColor: '#E0E0E0', borderRadius: 12, width: 140,
-                                                zIndex: 2000,
-                                                shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
-                                                shadowOpacity: 0.1, shadowRadius: 10, elevation: 10,
-                                            }}>
-                                                <TouchableOpacity
-                                                    onPress={() => { setShowOptions(false); onPartialPress?.(item); }}
-                                                    className="py-3 px-4 border-b border-[#CCCCCC]"
-                                                >
-                                                    <Text className="text-[14px] font-inter-bold text-[#333333]">Partial</Text>
-                                                </TouchableOpacity>
-                                                <TouchableOpacity
-                                                    onPress={() => { setShowOptions(false); onBatchPress?.(item); }}
-                                                    className="py-3 px-4"
-                                                >
-                                                    <Text className="text-[14px] font-inter-bold text-[#333333]">Batch</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        )}
-                                    </View>
-                                )}
                             </View>
                         </>
                     )}
                 </View>
             </View>
+
+            {/* Bottom Action Bar: Full-width Divider Line + Horizontally Centered Buttons */}
+            {!isCompleted && !isPartial && !isBatched && (
+                <>
+                    <View style={{ height: 1, backgroundColor: '#E2E4E2', marginTop: 14, marginBottom: 12 }} />
+                    <View className="flex-row items-center justify-between">
+                        <TouchableOpacity
+                            onPress={(e) => {
+                                e.stopPropagation();
+                                onBatchPress?.(item);
+                            }}
+                            style={{ backgroundColor: '#DCDEDC', minWidth: 104, height: 36 }}
+                            className="px-5 rounded-[8px] items-center justify-center"
+                        >
+                            <Text className="text-[13px] font-inter-semibold text-[#222222]">Batch</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={(e) => {
+                                e.stopPropagation();
+                                onPartialPress?.(item);
+                            }}
+                            style={{ backgroundColor: '#DCDEDC', minWidth: 104, height: 36 }}
+                            className="px-5 rounded-[8px] items-center justify-center"
+                        >
+                            <Text className="text-[13px] font-inter-semibold text-[#222222]">Short Qty</Text>
+                        </TouchableOpacity>
+                    </View>
+                </>
+            )}
         </TouchableOpacity>
     );
 };

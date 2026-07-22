@@ -4,7 +4,45 @@ import { fulfillmentApi } from '../api/fulfillment.api';
 import { ExtendMinutes } from '../types/fulfillment.types';
 import { toAppError } from '../api/errors';
 import { useNotificationStore } from '../store/useNotificationStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { useSocket } from './useSocket';
+
+// Orders claimed during this JS session — never auto-released by the startup cleanup.
+// Module-level so it resets on a full app reload, which is exactly the case we clean up after.
+const sessionClaims = new Set<string>();
+let staleLockCleanupDone = false;
+
+/**
+ * Releases stale locks left behind by this user when the app was killed or
+ * reloaded mid-pick. Without this, the claimed order stays hidden from the
+ * queue until the server lock expires (~10 min). Runs once per app launch,
+ * as soon as the authenticated user is known.
+ */
+export function useReleaseStaleLocks() {
+    const queryClient = useQueryClient();
+    const userId = useAuthStore((s) => s.user?.id);
+
+    useEffect(() => {
+        if (!userId || staleLockCleanupDone) return;
+        staleLockCleanupDone = true;
+        (async () => {
+            try {
+                const locks = await fulfillmentApi.getActiveLocks();
+                const stale = locks.filter(
+                    (l) => l.pickerId === userId && !sessionClaims.has(l.orderId)
+                );
+                if (!stale.length) return;
+                await Promise.all(
+                    stale.map((l) => fulfillmentApi.release(l.orderId).catch(() => {}))
+                );
+                queryClient.invalidateQueries({ queryKey: ['active-locks'] });
+                queryClient.invalidateQueries({ queryKey: ['orders'] });
+            } catch {
+                // Network error — locks will expire naturally on the server
+            }
+        })();
+    }, [userId, queryClient]);
+}
 
 /**
  * Fetches and tracks all active picker locks.
@@ -88,7 +126,10 @@ export function useFulfillmentActions(orderId?: string) {
 
     // ── Claim ─────────────────────────────────────────────────────────────────
     const { mutateAsync: claimMutation, isPending: isClaiming } = useMutation({
-        mutationFn: (id: string) => fulfillmentApi.claim(id),
+        mutationFn: (id: string) => {
+            sessionClaims.add(id); // guard against the startup cleanup releasing a live claim
+            return fulfillmentApi.claim(id);
+        },
         onSuccess: () => {
             invalidate();
         },
@@ -100,6 +141,15 @@ export function useFulfillmentActions(orderId?: string) {
     // ── Release ───────────────────────────────────────────────────────────────
     const { mutateAsync: releaseMutation, isPending: isReleasing } = useMutation({
         mutationFn: (id: string) => fulfillmentApi.release(id),
+        onMutate: async (id: string) => {
+            // Optimistically drop the lock so the order reappears in the queue
+            // immediately on back-navigation instead of waiting for the next poll
+            await queryClient.cancelQueries({ queryKey: ['active-locks'] });
+            queryClient.setQueryData<{ orderId: string }[]>(
+                ['active-locks'],
+                (old) => old?.filter((l) => l.orderId !== id)
+            );
+        },
         onSuccess: () => {
             invalidate();
         },

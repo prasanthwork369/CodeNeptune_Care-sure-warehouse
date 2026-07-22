@@ -22,7 +22,7 @@ export const tabs = [
         icon: icons.home,
     },
     {
-        name: "picker",
+        name: "checker",
         title: "Checker",
         icon: icons.picker,
     },

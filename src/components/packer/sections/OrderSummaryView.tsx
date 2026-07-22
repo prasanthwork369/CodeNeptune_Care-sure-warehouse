@@ -200,12 +200,16 @@ const OrderSummaryView: React.FC<OrderSummaryViewProps> = ({ orderId }) => {
                                                     <Text style={{ color: colors.text.DEFAULT }} className="font-inter-bold text-[18px] leading-6">
                                                         {item.name}
                                                     </Text>
-                                                    <Text style={{ color: colors.text.secondary }} className="text-[13px] font-inter mt-0.5">
-                                                        {item.manufacturer || 'Pfizer Inc.'}
-                                                    </Text>
-                                                    <Text style={{ color: colors.text.DEFAULT }} className="text-[12px] font-inter mt-0.5">
-                                                        {item.description || ''}
-                                                    </Text>
+                                                    {!!item.manufacturer && (
+                                                        <Text style={{ color: colors.text.secondary }} className="text-[13px] font-inter mt-0.5">
+                                                            {item.manufacturer}
+                                                        </Text>
+                                                    )}
+                                                    {!!item.description && (
+                                                        <Text style={{ color: colors.text.DEFAULT }} className="text-[12px] font-inter mt-0.5">
+                                                            {item.description}
+                                                        </Text>
+                                                    )}
                                                 </View>
                                                 {/* Reset icon when edited, checkbox when not */}
                                                 {isEdited ? (

@@ -38,9 +38,11 @@ const CompletedOrderItemCard: React.FC<CompletedOrderItemCardProps> = ({ item, r
                 <Text style={{ color: colors.text.DEFAULT }} className="font-inter-semibold text-[16px] leading-5">
                     {item.name}
                 </Text>
-                <Text style={{ color: colors.text.secondary }} className="text-[14px] font-inter mt-1">
-                    {item.manufacturer}
-                </Text>
+                {!!item.manufacturer && (
+                    <Text style={{ color: colors.text.secondary }} className="text-[14px] font-inter mt-1">
+                        {item.manufacturer}
+                    </Text>
+                )}
                 {reason ? (
                     <Text style={{ color: '#2E7D5E' }} className="text-[13px] font-inter-medium mt-1">
                         {reason}

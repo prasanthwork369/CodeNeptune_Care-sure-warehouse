@@ -45,9 +45,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             onChangeText={(val) => { setEmail(val); onInputChange(); }}
             onFocus={onFocus}
             autoCapitalize="none"
-            autoComplete="email"
+            autoComplete="username"
             keyboardType="email-address"
-            textContentType="emailAddress"
+            textContentType="username"
+            importantForAutofill="yes"
             returnKeyType="next"
             onSubmitEditing={() => passwordRef.current?.focus()}
             className="flex-1 text-[#222222] font-inter text-[16px]"
@@ -72,6 +73,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             onFocus={onFocus}
             autoComplete="password"
             textContentType="password"
+            importantForAutofill="yes"
             returnKeyType="done"
             className="flex-1 text-[#222222] font-inter text-[16px]"
           />

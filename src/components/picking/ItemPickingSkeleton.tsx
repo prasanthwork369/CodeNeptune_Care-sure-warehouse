@@ -5,34 +5,45 @@ import Skeleton from '../common/Skeleton';
 const ItemPickingSkeleton = () => {
     return (
         <View 
-            className="p-5 rounded-2xl mb-4 border border-[#EEEEEE] bg-white"
-            style={{ borderWidth: 1.5 }}
+            className="p-4 rounded-[20px] mb-5 bg-white border border-[#EBEBEB]"
+            style={{ borderWidth: 0.5 }}
         >
-            <View className="flex-row justify-between">
-                <View className="flex-1">
-                    {/* Item Name shimmer */}
-                    <Skeleton width={180} height={24} borderRadius={6} style={{ marginBottom: 8 }} />
-                    {/* Manufacturer shimmer */}
-                    <Skeleton width={120} height={14} borderRadius={4} style={{ marginBottom: 12 }} />
-                    
-                    {/* Tags shimmer */}
-                    <View className="flex-row items-center mb-6">
-                        <Skeleton width={100} height={24} borderRadius={8} style={{ marginRight: 8 }} />
-                        <Skeleton width={100} height={24} borderRadius={8} />
+            <View className="flex-row items-center">
+                {/* Left Column: Image Skeleton */}
+                <Skeleton width={120} height={120} borderRadius={12} />
+
+                {/* Right Column: Info Skeleton */}
+                <View className="flex-1 ml-4 justify-between">
+                    {/* Name + Checkbox Skeleton */}
+                    <View className="flex-row justify-between items-start">
+                        <View className="flex-1 mr-2">
+                            <Skeleton width={150} height={20} borderRadius={6} style={{ marginBottom: 6 }} />
+                            <Skeleton width={90} height={14} borderRadius={4} />
+                        </View>
+                        <Skeleton width={24} height={24} borderRadius={4} />
                     </View>
 
-                    {/* Quantity shimmer */}
-                    <View className="flex-row items-baseline">
-                        <Skeleton width={60} height={42} borderRadius={10} />
-                        <Skeleton width={100} height={18} borderRadius={4} style={{ marginLeft: 8 }} />
+                    {/* Tags Skeleton */}
+                    <View className="flex-row items-center mt-3" style={{ gap: 8 }}>
+                        <Skeleton width={88} height={22} borderRadius={999} />
+                        <Skeleton width={72} height={22} borderRadius={999} />
+                    </View>
+
+                    {/* Quantity Skeleton */}
+                    <View className="flex-row items-baseline mt-2">
+                        <Skeleton width={44} height={36} borderRadius={8} />
+                        <Skeleton width={90} height={14} borderRadius={4} style={{ marginLeft: 8 }} />
                     </View>
                 </View>
+            </View>
 
-                {/* Checkbox and Partial buttons shimmer */}
-                <View className="items-end justify-between ml-4">
-                    <Skeleton width={24} height={24} borderRadius={6} />
-                    <Skeleton width={80} height={36} borderRadius={12} />
-                </View>
+            {/* Full-width Divider Line */}
+            <View style={{ height: 1, backgroundColor: '#E2E4E2', marginTop: 14, marginBottom: 12 }} />
+
+            {/* Bottom Buttons Skeleton (Batch & Short Qty) */}
+            <View className="flex-row items-center justify-between">
+                <Skeleton width={104} height={36} borderRadius={8} />
+                <Skeleton width={104} height={36} borderRadius={8} />
             </View>
         </View>
     );

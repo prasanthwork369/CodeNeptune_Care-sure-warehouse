@@ -60,7 +60,7 @@ export const PickerLayout = () => {
     }, []));
 
     const { data: activeLocks = [] } = useQuery({
-        queryKey: ['activeLocks'],
+        queryKey: ['active-locks'],
         queryFn: fulfillmentApi.getActiveLocks,
         refetchInterval: isFocused ? 10000 : false,
         enabled: isFocused,

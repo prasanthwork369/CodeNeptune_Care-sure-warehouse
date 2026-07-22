@@ -10,7 +10,7 @@ export interface OrderItem {
     id: string;
     medicineId?: string;
     name: string;
-    manufacturer: string;
+    manufacturer?: string;
     batchNo?: string;
     expiryDate?: string;
     requiredQty: number;
@@ -78,6 +78,7 @@ export interface ApiOrder {
     };
     total: string;
     createdAt: string;
+    updatedAt?: string;
     customer: {
         firstName: string;
         lastName: string;

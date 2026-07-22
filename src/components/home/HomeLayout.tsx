@@ -50,7 +50,7 @@ export const HomeLayout: React.FC = () => {
         if (id === 'packs' && !hasPackerAccess) return;
         if (id === 'dispatch' && !hasDispatcherAccess) return;
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        if (id === 'picks') navigation.navigate('picker');
+        if (id === 'picks') navigation.navigate('checker');
         else if (id === 'packs') navigation.navigate('packer');
         else if (id === 'dispatch') navigation.navigate('dispatcher');
     };
