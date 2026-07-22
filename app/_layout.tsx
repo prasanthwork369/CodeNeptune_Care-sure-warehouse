@@ -121,12 +121,12 @@ export default function RootLayout() {
   }, [isAuthenticated, isLoaded, segments, loaded]);
 
   useEffect(() => {
-    if (loaded || error) {
+    if ((loaded || error) && isLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded, error]);
+  }, [loaded, error, isLoaded]);
 
-  if (!loaded && !error) {
+  if ((!loaded && !error) || !isLoaded) {
     return null;
   }
 

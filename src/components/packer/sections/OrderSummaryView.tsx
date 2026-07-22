@@ -34,10 +34,10 @@ const OrderSummaryView: React.FC<OrderSummaryViewProps> = ({ orderId }) => {
     const [packError, setPackError] = useState<string | null>(null);
 
     const { data: currentUser } = useUserQuery();
-    const pickerFirstName = currentUser?.profile?.firstName || '';
-    const pickerLastName = currentUser?.profile?.lastName || '';
-    const pickerName = (pickerFirstName + ' ' + pickerLastName).trim() || currentUser?.email || 'Unknown';
-    const pickerEmpId = currentUser?.id ? `EMP-${currentUser.id.slice(0, 8).toUpperCase()}` : null;
+    const checkerFirstName = currentUser?.profile?.firstName || '';
+    const checkerLastName = currentUser?.profile?.lastName || '';
+    const checkerName = (checkerFirstName + ' ' + checkerLastName).trim() || currentUser?.email || 'Unknown';
+    const checkerEmpId = currentUser?.id ? `EMP-${currentUser.id.slice(0, 8).toUpperCase()}` : null;
 
     const Person = icons.person;
 
@@ -79,7 +79,7 @@ const OrderSummaryView: React.FC<OrderSummaryViewProps> = ({ orderId }) => {
                 Order Not Ready
             </Text>
             <Text className="text-[14px] font-inter text-center mb-8" style={{ color: colors.text.secondary }}>
-                This order has not been picked yet and cannot be packed.{'\n'}Current status: {order.status}
+                This order has not been checked yet and cannot be packed.{'\n'}Current status: {order.status}
             </Text>
             <TouchableOpacity className="bg-[#0F7635] px-8 py-3 rounded-full" onPress={() => router.replace('/scanner' as any)}>
                 <Text className="text-white font-inter-bold">Scan Again</Text>
@@ -132,18 +132,18 @@ const OrderSummaryView: React.FC<OrderSummaryViewProps> = ({ orderId }) => {
                             </View>
                         </View>
 
-                        {/* Picked by */}
+                        {/* Checked by */}
                         <View>
                             <Text className="text-[11px] font-inter-medium mb-1" style={{ color: colors.text.secondary }}>
-                                Picked by
+                                Checked by
                             </Text>
                             <View className="flex-row items-center" style={{ gap: 10 }}>
                                 <Text style={{ fontSize: 13, fontFamily: 'Inter_600SemiBold', color: colors.text.DEFAULT }}>
-                                    {pickerName}
+                                    {checkerName}
                                 </Text>
-                                {/* {pickerEmpId && (
+                                {/* {checkerEmpId && (
                                     <Text style={{ fontSize: 13, fontFamily: 'Inter_400Regular', color: colors.text.secondary }}>
-                                        {pickerEmpId}
+                                        {checkerEmpId}
                                     </Text>
                                 )} */}
                             </View>

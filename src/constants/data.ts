@@ -23,7 +23,7 @@ export const tabs = [
     },
     {
         name: "picker",
-        title: "Picker",
+        title: "Checker",
         icon: icons.picker,
     },
     {
@@ -41,7 +41,7 @@ export const tabs = [
 export const WAREHOUSE_STATS = [
     {
         id: "picks",
-        title: "Today's Picks",
+        title: "Today's Checks",
         badge: "Almost there! 1500 to go",
         value: 140,
         label: "Orders",

@@ -20,12 +20,15 @@ export const HomeLayout: React.FC = () => {
     const { data: warehouseStats, isLoading: statsLoading, error: statsError, refetch: refetchStats } = useHomeQuery();
     const [refreshing, setRefreshing] = useState(false);
     const isAdmin = roles.includes('admin');
-    const hasPickerAccess     = isAdmin || permissions.includes('picker-panel:read');
+    const hasCheckerAccess    = isAdmin || permissions.includes('checker-panel:read') || permissions.includes('picker-panel:read');
+    const hasPickerAccess     = hasCheckerAccess;
     const hasPackerAccess     = isAdmin || permissions.includes('packer-panel:read');
     const hasDispatcherAccess = isAdmin || permissions.includes('dispatcher-panel:read') || permissions.includes('dispatcher-panel:update');
 
     const tabBarHeight = useTabBarStore(s => s.tabBarHeight);
-    const isInitialLoading = (statsLoading && !warehouseStats?.length) || (!isLoaded && !user);
+    const statsList = warehouseStats as unknown as any[] | undefined;
+    const isInitialLoading = (statsLoading && !statsList?.length) || (!isLoaded && !user);
+
 
     const onRefresh = async () => {
         setRefreshing(true);
