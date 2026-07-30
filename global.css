@@ -2,41 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   :root {
     /* Main Theme Colors */
-    --primary: #0F7635;
-    --text-deep: #1A1A1A;
+    --primary: #0f7635;
+    --text-deep: #1a1a1a;
     --text-main: #222222;
-    --text-secondary: #6A6A6A;
+    --text-secondary: #6a6a6a;
     --text-muted: #969696;
-    
+
     /* UI Elements */
-    --border: #E6E6E6;
-    --border-light: #EEEEEE;
-    --bg-main: #F9F9F9;
-    --bg-gray: #F2F2F2;
-    --blue-info: #2196F3;
-    
+    --border: #e6e6e6;
+    --border-light: #eeeeee;
+    --bg-main: #f9f9f9;
+    --bg-gray: #f2f2f2;
+    --blue-info: #2196f3;
+
     /* Status Colors */
-    --warning: #D9A95D;
-    --warning-bg: #F5F2DC;
-    --success-bg: #E8F4EC;
-    --success-border: #A0C9AF;
-    --partial-bg: #FDF2E2;
-    --partial-border: #EAD2AF;
-    --completed-bg: #E8F4EC;
-    --completed-border: #A0C9AF;
+    --warning: #d9a95d;
+    --warning-bg: #f5f2dc;
+    --success-bg: #e8f4ec;
+    --success-border: #a0c9af;
+    --partial-bg: #fdf2e2;
+    --partial-border: #ead2af;
+    --completed-bg: #e8f4ec;
+    --completed-border: #a0c9af;
 
     /* Legacy variables (keeping for compatibility during migration) */
-    --color-primary: #0F7635;
+    --color-primary: #0f7635;
     --color-secondary: #106132;
-    --color-accent: #FACA15;
-    --color-background: #F8F9FA;
-    --color-card: #FFFFFF;
-    --color-text: #1A1A1A;
-    --color-border: #E5E7EB;
+    --color-accent: #faca15;
+    --color-background: #f8f9fa;
+    --color-card: #ffffff;
+    --color-text: #1a1a1a;
+    --color-border: #e5e7eb;
   }
 }
 
@@ -46,7 +45,6 @@
   }
 
   .btn-container {
-    @apply ;
+    @apply;
   }
-
 }

@@ -1,7 +1,7 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AxiosRequestConfig } from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AxiosRequestConfig } from "axios";
 
-const STORAGE_KEY = 'offline_request_queue';
+const STORAGE_KEY = "offline_request_queue";
 const MAX_SIZE = 50;
 
 interface QueuedRequest {
@@ -19,7 +19,7 @@ class RequestQueue {
       const raw = await AsyncStorage.getItem(STORAGE_KEY);
       if (!raw) return;
       const configs: AxiosRequestConfig[] = JSON.parse(raw);
-      configs.forEach(config => {
+      configs.forEach((config) => {
         if (this.queue.length < MAX_SIZE) {
           // Restored entries have no live promise — fire-and-forget on replay
           this.queue.push({ config, resolve: () => {}, reject: () => {} });
@@ -31,9 +31,13 @@ class RequestQueue {
     }
   }
 
-  async add(config: AxiosRequestConfig, resolve: any, reject: any): Promise<void> {
+  async add(
+    config: AxiosRequestConfig,
+    resolve: any,
+    reject: any,
+  ): Promise<void> {
     if (this.queue.length >= MAX_SIZE) {
-      reject(new Error('Offline queue full — request dropped'));
+      reject(new Error("Offline queue full — request dropped"));
       return;
     }
     this.queue.push({ config, resolve, reject });
@@ -68,7 +72,7 @@ class RequestQueue {
 
   private async _persist(): Promise<void> {
     try {
-      const configs = this.queue.map(r => r.config);
+      const configs = this.queue.map((r) => r.config);
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(configs));
     } catch {
       // Storage write failure — non-fatal

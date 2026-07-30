@@ -1,59 +1,62 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
-import { icons } from '@/src/constants/icons';
+import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+import { icons } from "@/src/constants/icons";
 
 interface ScanBannerProps {
-    title: string;
-    bgColor: string;
-    buttonBg: string;
-    buttonTextColor?: string;
-    onPress?: () => void;
+  title: string;
+  bgColor: string;
+  buttonBg: string;
+  buttonTextColor?: string;
+  onPress?: () => void;
 }
 
 const ScanBanner: React.FC<ScanBannerProps> = ({
-    title,
-    bgColor,
-    buttonBg,
-    buttonTextColor = '#FFFFFF',
-    onPress
+  title,
+  bgColor,
+  buttonBg,
+  buttonTextColor = "#FFFFFF",
+  onPress,
 }) => {
-    const router = useRouter();
-    const ScanIcon = icons.scan_icon;
+  const router = useRouter();
+  const ScanIcon = icons.scan_icon;
 
-    const handlePress = () => {
-        if (onPress) {
-            onPress();
-        } else {
-            router.push('/scanner');
-        }
-    };
+  const handlePress = () => {
+    if (onPress) {
+      onPress();
+    } else {
+      router.push("/scanner");
+    }
+  };
 
-    return (
-        <TouchableOpacity
-            activeOpacity={0.85}
-            onPress={handlePress}
-            style={{ backgroundColor: bgColor }}
-            className="rounded-[28px] flex-row items-center px-6 py-8"
+  return (
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={handlePress}
+      style={{ backgroundColor: bgColor }}
+      className="rounded-[28px] flex-row items-center px-6 py-8"
+    >
+      <View className="mr-5 items-center justify-center">
+        <ScanIcon width={150} height={150} fill="#FFFFFF" />
+      </View>
+      <View className="flex-1">
+        <Text className="text-white text-[20px] font-inter-semibold leading-7 mb-6">
+          {title}
+        </Text>
+        <View
+          style={{ backgroundColor: buttonBg }}
+          className="py-4 px-7 rounded-[14px] self-start"
         >
-            <View className="mr-5 items-center justify-center">
-                <ScanIcon width={150} height={150} fill="#FFFFFF" />
-            </View>
-            <View className="flex-1">
-                <Text className="text-white text-[20px] font-inter-semibold leading-7 mb-6">
-                    {title}
-                </Text>
-                <View
-                    style={{ backgroundColor: buttonBg }}
-                    className="py-4 px-7 rounded-[14px] self-start"
-                >
-                    <Text style={{ color: buttonTextColor }} className="font-inter-bold text-[16px]">
-                        Start Scan
-                    </Text>
-                </View>
-            </View>
-        </TouchableOpacity>
-    );
+          <Text
+            style={{ color: buttonTextColor }}
+            className="font-inter-bold text-[16px]"
+          >
+            Start Scan
+          </Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
 };
 
 export default ScanBanner;

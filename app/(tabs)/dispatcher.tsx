@@ -1,2 +1,2 @@
-import { DispatcherLayout } from '@/src/components/dispatcher/DispatcherLayout';
+import { DispatcherLayout } from "@/src/components/dispatcher/DispatcherLayout";
 export default DispatcherLayout;

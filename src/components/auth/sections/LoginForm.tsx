@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
-import { View, TextInput, TouchableOpacity, Pressable } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import InputError from '@/src/components/common/InputError';
+import React, { useRef } from "react";
+import { View, TextInput, TouchableOpacity, Pressable } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import InputError from "@/src/components/common/InputError";
 
 interface LoginFormProps {
   email: string;
@@ -35,14 +35,17 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       <View>
         <Pressable
           onPress={() => emailRef.current?.focus()}
-          className={`bg-[#F0F0F0] rounded-xl px-5 py-4 flex-row items-center border-2 ${errors.email ? 'border-[#FF4D4D]' : 'border-transparent'}`}
+          className={`bg-[#F0F0F0] rounded-xl px-5 py-4 flex-row items-center border-2 ${errors.email ? "border-[#FF4D4D]" : "border-transparent"}`}
         >
           <TextInput
             ref={emailRef}
             placeholder="Email"
             placeholderTextColor="#6A6A6A"
             value={email}
-            onChangeText={(val) => { setEmail(val); onInputChange(); }}
+            onChangeText={(val) => {
+              setEmail(val);
+              onInputChange();
+            }}
             onFocus={onFocus}
             autoCapitalize="none"
             autoComplete="username"
@@ -61,7 +64,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       <View className="mt-4">
         <Pressable
           onPress={() => passwordRef.current?.focus()}
-          className={`bg-[#F0F0F0] rounded-xl px-5 py-4 flex-row items-center border-2 ${errors.password ? 'border-[#FF4D4D]' : 'border-transparent'}`}
+          className={`bg-[#F0F0F0] rounded-xl px-5 py-4 flex-row items-center border-2 ${errors.password ? "border-[#FF4D4D]" : "border-transparent"}`}
         >
           <TextInput
             ref={passwordRef}
@@ -69,7 +72,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             placeholderTextColor="#6A6A6A"
             secureTextEntry={!showPassword}
             value={password}
-            onChangeText={(val) => { setPassword(val); onInputChange(); }}
+            onChangeText={(val) => {
+              setPassword(val);
+              onInputChange();
+            }}
             onFocus={onFocus}
             autoComplete="password"
             textContentType="password"
@@ -84,7 +90,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           >
             <View className="opacity-80">
               <MaterialCommunityIcons
-                name={showPassword ? 'eye' : 'eye-off'}
+                name={showPassword ? "eye" : "eye-off"}
                 size={24}
                 color="#6A6A6A"
               />

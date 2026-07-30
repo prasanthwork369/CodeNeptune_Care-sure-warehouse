@@ -1,2 +1,2 @@
-import { HomeLayout } from '@/src/components/home/HomeLayout';
+import { HomeLayout } from "@/src/components/home/HomeLayout";
 export default HomeLayout;

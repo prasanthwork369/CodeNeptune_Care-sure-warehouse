@@ -1,6 +1,6 @@
-import NetInfo from '@react-native-community/netinfo';
-import { useNetworkStore } from '../store/useNetworkStore';
-import { requestQueue } from './requestQueue';
+import NetInfo from "@react-native-community/netinfo";
+import { useNetworkStore } from "../store/useNetworkStore";
+import { requestQueue } from "./requestQueue";
 
 export const initNetworkListener = (axiosInstance: any) => {
   // Restore any requests queued in a previous session
@@ -16,7 +16,8 @@ export const initNetworkListener = (axiosInstance: any) => {
 
     useNetworkStore.getState().setIsConnected(isConnected, isInternetReachable);
 
-    const isNowFullyConnected = isConnected === true && isInternetReachable === true;
+    const isNowFullyConnected =
+      isConnected === true && isInternetReachable === true;
     if (!wasFullyConnected && isNowFullyConnected) {
       requestQueue.process(axiosInstance);
     }

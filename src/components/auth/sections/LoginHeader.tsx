@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import Logo from '@/assets/images/logo.svg';
+import React from "react";
+import { View, Text } from "react-native";
+import Logo from "@/assets/images/logo.svg";
 
 export const LoginHeader: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ export const LoginHeader: React.FC = () => {
       {/* Logo Box */}
       <View className="mb-10">
         <View
-          style={{ backgroundColor: '#EAF9CC' }}
+          style={{ backgroundColor: "#EAF9CC" }}
           className="w-20 h-20 rounded-[22px] items-center justify-center"
         >
           <Logo width={100} height={100} />

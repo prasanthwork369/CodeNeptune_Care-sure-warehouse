@@ -1,14 +1,17 @@
 export interface LockResult {
-    expiresAt: string;
+  expiresAt: string;
 }
 
 export interface ActiveLock {
-    orderId: string;
-    pickerId: string;
-    ttl: number;
+  orderId: string;
+  pickerId: string;
+  ttl: number;
 }
 
-export type ExtendMinutes = '2' | '5';
+export type ExtendMinutes = "2" | "5";
 
-export { FULFILLMENT_TYPE, FULFILLMENT_TYPE_LABELS, type FulfillmentTypeValue } from '../constants/order.constants';
-
+export {
+  FULFILLMENT_TYPE,
+  FULFILLMENT_TYPE_LABELS,
+  type FulfillmentTypeValue,
+} from "../constants/order.constants";

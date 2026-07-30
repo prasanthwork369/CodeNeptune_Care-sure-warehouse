@@ -1,34 +1,36 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Keyboard
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
-import { authService } from '@/src/services/auth.service';
-import { validate } from '@/src/utils/validation';
+  Keyboard,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
+import { authService } from "@/src/services/auth.service";
+import { validate } from "@/src/utils/validation";
 
 // Modular Sections
-import { LoginHeader } from './sections/LoginHeader';
-import { LoginForm } from './sections/LoginForm';
-import { LoginAction } from './sections/LoginAction';
+import { LoginHeader } from "./sections/LoginHeader";
+import { LoginForm } from "./sections/LoginForm";
+import { LoginAction } from "./sections/LoginAction";
 
 export const LoginLayout: React.FC = () => {
   const router = useRouter();
   const scrollRef = useRef<ScrollView>(null);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [loginError, setLoginError] = useState('');
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {},
+  );
+  const [loginError, setLoginError] = useState("");
 
   const validateForm = () => {
     const emailRes = validate.email(email);
@@ -48,7 +50,7 @@ export const LoginLayout: React.FC = () => {
   };
 
   const handleInputChange = () => {
-    if (loginError) setLoginError('');
+    if (loginError) setLoginError("");
     setErrors({});
   };
 
@@ -60,15 +62,15 @@ export const LoginLayout: React.FC = () => {
     }
 
     setIsLoading(true);
-    setLoginError('');
+    setLoginError("");
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
     try {
       await authService.login(email, password);
-      router.replace('/(tabs)');
+      router.replace("/(tabs)");
     } catch (error: any) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      setLoginError(error?.message || 'Login failed. Please try again.');
+      setLoginError(error?.message || "Login failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -77,9 +79,9 @@ export const LoginLayout: React.FC = () => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 10}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 10}
       >
         <ScrollView
           ref={scrollRef}
@@ -90,7 +92,7 @@ export const LoginLayout: React.FC = () => {
         >
           <View className="pt-40 pb-6 flex-1">
             <LoginHeader />
-            
+
             <LoginForm
               email={email}
               setEmail={setEmail}
@@ -107,7 +109,9 @@ export const LoginLayout: React.FC = () => {
             {loginError ? (
               <View className="mt-5 bg-[#FFF0F0] border border-[#FFD4D4] rounded-xl px-4 py-3 flex-row items-center">
                 <Ionicons name="alert-circle" size={20} color="#CF1A1A" />
-                <Text className="text-[#CF1A1A] font-inter-medium text-[14px] ml-3 flex-1">{loginError}</Text>
+                <Text className="text-[#CF1A1A] font-inter-medium text-[14px] ml-3 flex-1">
+                  {loginError}
+                </Text>
               </View>
             ) : null}
           </View>

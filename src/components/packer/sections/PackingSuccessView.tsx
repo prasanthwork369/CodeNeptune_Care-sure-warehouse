@@ -1,13 +1,13 @@
-import React from 'react';
-import OrderSuccessView from '../../common/OrderSuccessView';
+import React from "react";
+import OrderSuccessView from "../../common/OrderSuccessView";
 
 const PackingSuccessView = () => (
-    <OrderSuccessView
-        title="Order sent to dispatch"
-        subtitle="All items verified and packed"
-        backLabel="Back to Checker"
-        backRoute="/(tabs)/checker"
-    />
+  <OrderSuccessView
+    title="Order sent to dispatch"
+    subtitle="All items verified and packed"
+    backLabel="Back to Checker"
+    backRoute="/(tabs)/checker"
+  />
 );
 
 export default PackingSuccessView;

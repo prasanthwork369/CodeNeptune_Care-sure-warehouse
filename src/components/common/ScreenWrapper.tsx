@@ -1,11 +1,11 @@
-import React from 'react';
-import { StyleProp, ViewStyle } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from "react";
+import { StyleProp, ViewStyle } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface ScreenWrapperProps {
-    children: React.ReactNode;
-    style?: StyleProp<ViewStyle>;
-    edges?: ('top' | 'bottom' | 'left' | 'right')[];
+  children: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+  edges?: ("top" | "bottom" | "left" | "right")[];
 }
 
 /**
@@ -16,13 +16,13 @@ interface ScreenWrapperProps {
  * those in ScreenWrapper.
  */
 const ScreenWrapper: React.FC<ScreenWrapperProps> = ({
-    children,
-    style,
-    edges = ['bottom'],
+  children,
+  style,
+  edges = ["bottom"],
 }) => (
-    <SafeAreaView edges={edges} style={[{ flex: 1 }, style]}>
-        {children}
-    </SafeAreaView>
+  <SafeAreaView edges={edges} style={[{ flex: 1 }, style]}>
+    {children}
+  </SafeAreaView>
 );
 
 export default ScreenWrapper;

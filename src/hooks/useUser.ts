@@ -1,7 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { authApi } from '../api/auth.api';
-import { userService } from '../services/user.service';
-import { useAuthStore } from '../store/useAuthStore';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { authApi } from "../api/auth.api";
+import { userService } from "../services/user.service";
+import { useAuthStore } from "../store/useAuthStore";
 
 /**
  * Hook to fetch the current user profile.
@@ -9,15 +9,15 @@ import { useAuthStore } from '../store/useAuthStore';
  */
 export const useUserQuery = () => {
   const { isAuthenticated } = useAuthStore();
-  
+
   return useQuery({
-    queryKey: ['user'],
+    queryKey: ["user"],
     queryFn: async () => {
       const response = await authApi.getMe();
       if (response.success) {
         return response.data;
       }
-      throw new Error(response.message || 'Failed to fetch user data');
+      throw new Error(response.message || "Failed to fetch user data");
     },
     enabled: isAuthenticated, // Only fetch if we have an active session
   });
@@ -29,7 +29,7 @@ export const useUserQuery = () => {
  */
 export const useUpdateUserMutation = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: any }) => {
       const response = await userService.updateProfile(id, data);
@@ -37,7 +37,7 @@ export const useUpdateUserMutation = () => {
     },
     onSuccess: () => {
       // Refresh the user profile data in the cache
-      queryClient.invalidateQueries({ queryKey: ['user'] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
 };

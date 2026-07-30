@@ -1,6 +1,6 @@
-import React from 'react';
-import Animated, { FadeInUp, FadeOut } from 'react-native-reanimated';
-import { Text } from 'react-native';
+import React from "react";
+import Animated, { FadeInUp, FadeOut } from "react-native-reanimated";
+import { Text } from "react-native";
 
 interface InputErrorProps {
   message?: string;
@@ -11,8 +11,8 @@ const InputError = ({ message, visible }: InputErrorProps) => {
   if (!visible || !message) return null;
 
   return (
-    <Animated.View 
-      entering={FadeInUp.duration(300)} 
+    <Animated.View
+      entering={FadeInUp.duration(300)}
       exiting={FadeOut.duration(200)}
       className="mt-1.5 ml-1"
     >
