@@ -34,10 +34,10 @@ const OrderSummaryView: React.FC<OrderSummaryViewProps> = ({ orderId }) => {
     const [packError, setPackError] = useState<string | null>(null);
 
     const { data: currentUser } = useUserQuery();
-    const checkerFirstName = currentUser?.profile?.firstName || '';
-    const checkerLastName = currentUser?.profile?.lastName || '';
-    const checkerName = (checkerFirstName + ' ' + checkerLastName).trim() || currentUser?.email || 'Unknown';
-    const checkerEmpId = currentUser?.id ? `EMP-${currentUser.id.slice(0, 8).toUpperCase()}` : null;
+    const pickerFirstName = currentUser?.profile?.firstName || '';
+    const pickerLastName = currentUser?.profile?.lastName || '';
+    const pickerName = (pickerFirstName + ' ' + pickerLastName).trim() || currentUser?.email || 'Unknown';
+    const pickerEmpId = currentUser?.id ? `EMP-${currentUser.id.slice(0, 8).toUpperCase()}` : null;
 
     const Person = icons.person;
 
@@ -99,7 +99,13 @@ const OrderSummaryView: React.FC<OrderSummaryViewProps> = ({ orderId }) => {
                 style={{ paddingTop: insets.top + 12 }}
                 className="px-5 pb-4 flex-row items-center bg-white border-b border-[#EEEEEE]"
             >
-                <BackButton />
+                <BackButton onPress={() => {
+                    if (router.canGoBack()) {
+                        router.back();
+                    } else {
+                        router.replace('/(tabs)/checker' as any);
+                    }
+                }} />
                 <Text className="text-[18px] font-inter-bold" style={{ color: colors.text.DEFAULT }}>
                     Order Summary
                 </Text>
@@ -132,18 +138,18 @@ const OrderSummaryView: React.FC<OrderSummaryViewProps> = ({ orderId }) => {
                             </View>
                         </View>
 
-                        {/* Checked by */}
+                        {/* Picked by */}
                         <View>
                             <Text className="text-[11px] font-inter-medium mb-1" style={{ color: colors.text.secondary }}>
-                                Checked by
+                                Picked by
                             </Text>
                             <View className="flex-row items-center" style={{ gap: 10 }}>
                                 <Text style={{ fontSize: 13, fontFamily: 'Inter_600SemiBold', color: colors.text.DEFAULT }}>
-                                    {checkerName}
+                                    {pickerName}
                                 </Text>
-                                {/* {checkerEmpId && (
+                                {/* {pickerEmpId && (
                                     <Text style={{ fontSize: 13, fontFamily: 'Inter_400Regular', color: colors.text.secondary }}>
-                                        {checkerEmpId}
+                                        {pickerEmpId}
                                     </Text>
                                 )} */}
                             </View>
@@ -350,7 +356,7 @@ const OrderSummaryView: React.FC<OrderSummaryViewProps> = ({ orderId }) => {
                         const checks = Object.entries(editReasons).map(([orderItemId, reason]) => ({
                             orderItemId,
                             reason,
-                            notes: 'Flagged by packer during fulfillment',
+                            notes: 'Flagged by checker during fulfillment',
                         }));
                         if (checks.length > 0) {
                             await fulfillmentApi.submitQualityChecks(order.id, checks);
@@ -366,8 +372,8 @@ const OrderSummaryView: React.FC<OrderSummaryViewProps> = ({ orderId }) => {
 
                         setShowInvoiceModal(false);
                         queryClient.invalidateQueries({ queryKey: ['home-stats'] });
-                        queryClient.invalidateQueries({ queryKey: ['packer-packed-today'] });
-                        queryClient.invalidateQueries({ queryKey: ['packer-packed'] });
+                        queryClient.invalidateQueries({ queryKey: ['checker-packed-today'] });
+                        queryClient.invalidateQueries({ queryKey: ['checker-packed'] });
                         queryClient.invalidateQueries({ queryKey: ['dispatched-orders'] });
                         router.push({
                             pathname: '/packing/success',

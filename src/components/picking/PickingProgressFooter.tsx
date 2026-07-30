@@ -26,7 +26,7 @@ const PickingProgressFooter: React.FC<PickingProgressFooterProps> = ({
 }) => {
     const insets = useSafeAreaInsets();
     const progress = totalItems > 0 ? (pickedItems / totalItems) * 100 : 0;
-    const isReadyForPacker = isAllHandled && !isAnyPartial;
+    const isReadyForChecker = isAllHandled && !isAnyPartial;
     const isPartialAction = isAllHandled && isAnyPartial;
 
     const animatedProgress = useSharedValue(progress);
@@ -45,7 +45,7 @@ const PickingProgressFooter: React.FC<PickingProgressFooterProps> = ({
     });
 
     const getButtonStyles = () => {
-        if (isReadyForPacker) return { backgroundColor: colors.brand.primary };
+        if (isReadyForChecker) return { backgroundColor: colors.brand.primary };
         if (isPartialAction) return { backgroundColor: colors.status.warning };
         return { backgroundColor: colors.surface.gray };
     };
@@ -76,8 +76,8 @@ const PickingProgressFooter: React.FC<PickingProgressFooterProps> = ({
                 style={[getButtonStyles(), { flex: 28, opacity: isAllHandled ? 1 : 0.4 }]}
                 className="py-4 rounded-xl items-center justify-center"
             >
-                <Text className={`text-[15px] font-inter-semibold ${isReadyForPacker || isPartialAction ? 'text-white' : 'text-black/20'}`}>
-                    {isPartialAction ? 'Mark as Partial' : 'Move to Packer'}
+                <Text className={`text-[15px] font-inter-semibold ${isReadyForChecker || isPartialAction ? 'text-white' : 'text-black/20'}`}>
+                    {isPartialAction ? 'Mark as Partial' : 'Move to Checker'}
                 </Text>
             </TouchableOpacity>
         </View>

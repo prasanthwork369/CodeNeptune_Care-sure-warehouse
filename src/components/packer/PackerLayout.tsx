@@ -18,7 +18,7 @@ export const PackerLayout = () => {
     const tabBarHeight = useTabBarStore(s => s.tabBarHeight);
 
     const { data: packedOrders = [], isLoading, isRefetching, refetch } = useQuery({
-        queryKey: ['packer-packed-today'],
+        queryKey: ['checker-packed-today'],
         queryFn: async () => {
             const today = new Date();
             const raw = await orderApi.listPacked();
@@ -49,7 +49,7 @@ export const PackerLayout = () => {
                 <View className="bg-white px-5 pt-6 pb-6">
                     <View className="mb-5">
                         <Text style={{ color: colors.text.DEFAULT }} className="text-[28px] font-inter-bold">
-                            Packer
+                            Checker
                         </Text>
                     </View>
                     <ScanBanner

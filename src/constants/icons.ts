@@ -42,6 +42,7 @@ import adf_scanner from '@/assets/icons/adf_scanner.svg';
 export const icons = {
     home,
     picker,    // Use picker.svg for Orders tab
+    checker: packer, // Alias for Checker tab
     packer,  // Use packer.svg for Referral tab
     profile,
     dispatch,

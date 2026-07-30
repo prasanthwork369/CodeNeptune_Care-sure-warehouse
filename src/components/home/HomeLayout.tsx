@@ -20,9 +20,8 @@ export const HomeLayout: React.FC = () => {
     const { data: warehouseStats, isLoading: statsLoading, error: statsError, refetch: refetchStats } = useHomeQuery();
     const [refreshing, setRefreshing] = useState(false);
     const isAdmin = roles.includes('admin');
-    const hasCheckerAccess    = isAdmin || permissions.includes('checker-panel:read') || permissions.includes('picker-panel:read');
-    const hasPickerAccess     = hasCheckerAccess;
-    const hasPackerAccess     = isAdmin || permissions.includes('packer-panel:read');
+    const hasPickerAccess     = isAdmin || permissions.includes('picker-panel:read');
+    const hasCheckerAccess    = isAdmin || permissions.includes('checker-panel:read') || permissions.includes('packer-panel:read');
     const hasDispatcherAccess = isAdmin || permissions.includes('dispatcher-panel:read') || permissions.includes('dispatcher-panel:update');
 
     const tabBarHeight = useTabBarStore(s => s.tabBarHeight);
@@ -47,11 +46,11 @@ export const HomeLayout: React.FC = () => {
 
     const handleStatPress = (id: string) => {
         if (id === 'picks' && !hasPickerAccess) return;
-        if (id === 'packs' && !hasPackerAccess) return;
+        if (id === 'packs' && !hasCheckerAccess) return;
         if (id === 'dispatch' && !hasDispatcherAccess) return;
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        if (id === 'picks') navigation.navigate('checker');
-        else if (id === 'packs') navigation.navigate('packer');
+        if (id === 'picks') navigation.navigate('picker');
+        else if (id === 'packs') navigation.navigate('checker');
         else if (id === 'dispatch') navigation.navigate('dispatcher');
     };
 

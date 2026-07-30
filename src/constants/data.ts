@@ -22,14 +22,14 @@ export const tabs = [
         icon: icons.home,
     },
     {
-        name: "checker",
-        title: "Checker",
+        name: "picker",
+        title: "Picker",
         icon: icons.picker,
     },
     {
-        name: "packer",
-        title: "Packer",
-        icon: icons.packer,
+        name: "checker",
+        title: "Checker",
+        icon: icons.checker,
     },
     {
         name: "dispatcher",
@@ -41,7 +41,7 @@ export const tabs = [
 export const WAREHOUSE_STATS = [
     {
         id: "picks",
-        title: "Today's Checks",
+        title: "Today's Picks",
         badge: "Almost there! 1500 to go",
         value: 140,
         label: "Orders",

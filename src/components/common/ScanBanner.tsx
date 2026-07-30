@@ -30,7 +30,9 @@ const ScanBanner: React.FC<ScanBannerProps> = ({
     };
 
     return (
-        <View
+        <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={handlePress}
             style={{ backgroundColor: bgColor }}
             className="rounded-[28px] flex-row items-center px-6 py-8"
         >
@@ -41,18 +43,16 @@ const ScanBanner: React.FC<ScanBannerProps> = ({
                 <Text className="text-white text-[20px] font-inter-semibold leading-7 mb-6">
                     {title}
                 </Text>
-                <TouchableOpacity
+                <View
                     style={{ backgroundColor: buttonBg }}
                     className="py-4 px-7 rounded-[14px] self-start"
-                    activeOpacity={0.8}
-                    onPress={handlePress}
                 >
                     <Text style={{ color: buttonTextColor }} className="font-inter-bold text-[16px]">
                         Start Scan
                     </Text>
-                </TouchableOpacity>
+                </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 

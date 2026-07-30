@@ -13,7 +13,7 @@ const AllPackedOrdersView = () => {
     const SwapVert = icons.swapVert;
 
     const { data: packedOrders = [], isLoading, isRefetching, refetch } = useQuery({
-        queryKey: ['packer-packed'],
+        queryKey: ['checker-packed'],
         queryFn: async () => (await orderApi.listPacked()).map(mapOrder),
     });
 

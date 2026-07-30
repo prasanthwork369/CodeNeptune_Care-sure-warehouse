@@ -88,7 +88,7 @@ const CompletedOrderView: React.FC<CompletedOrderViewProps> = ({ orderId }) => {
                                     Picked by
                                 </Text>
                                 <Text style={{ color: colors.text.DEFAULT, fontSize: 14, fontFamily: 'Inter_600SemiBold' }} numberOfLines={1}>
-                                    —
+                                    {order?.pickedBy || '—'}
                                 </Text>
                             </View>
                         </View>

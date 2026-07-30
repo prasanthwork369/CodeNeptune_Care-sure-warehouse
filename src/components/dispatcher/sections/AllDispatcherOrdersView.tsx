@@ -27,7 +27,7 @@ const AllDispatcherOrdersView: React.FC<AllDispatcherOrdersViewProps> = ({ initi
     });
 
     const dispatchedOrders = useMemo(() => 
-        allRawOrders.filter(o => Number(o.status) === 6).map(mapOrder), 
+        allRawOrders.filter(o => [6, 7].includes(Number(o.status))).map(mapOrder), 
         [allRawOrders]
     );
 

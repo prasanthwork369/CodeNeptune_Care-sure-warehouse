@@ -17,7 +17,7 @@ interface ConfirmMoveBottomSheetProps {
     onClose: () => void;
     onConfirm: () => void;
     message: string;
-    type: 'packer' | 'partial';
+    type: 'checker' | 'partial';
     isLoading?: boolean;
 }
 
@@ -121,7 +121,7 @@ const ConfirmMoveBottomSheet: React.FC<ConfirmMoveBottomSheetProps> = ({
 
                             {/* Icon Header */}
                             <View className="w-20 h-20 bg-[#F2F2F2] rounded-full items-center justify-center mb-6">
-                                <Icon width={type === 'packer' ? 30 : 25} height={type === 'packer' ? 30 : 30} fill={colors.text.secondary} />
+                                <Icon width={type === 'checker' ? 30 : 25} height={type === 'checker' ? 30 : 30} fill={colors.text.secondary} />
                             </View>
 
                             {/* Confirmation Text */}
@@ -132,8 +132,8 @@ const ConfirmMoveBottomSheet: React.FC<ConfirmMoveBottomSheetProps> = ({
                                 {message}
                             </Text>
 
-                            {/* Warning Box (Only for Packer) */}
-                            {type === 'packer' && (
+                            {/* Warning Box (Only for Checker) */}
+                            {type === 'checker' && (
                                 <View
                                     style={{ backgroundColor: colors.status.warningBg }}
                                     className="p-5 rounded-[20px] flex-row items-center mb-10 w-full"
@@ -145,7 +145,7 @@ const ConfirmMoveBottomSheet: React.FC<ConfirmMoveBottomSheetProps> = ({
                                         style={{ color: colors.text.DEFAULT }}
                                         className="flex-1 text-[12px] font-inter leading-5"
                                     >
-                                        All items must be verified before proceeding to the packing station.
+                                        All items must be verified before proceeding to the checking station.
                                     </Text>
                                 </View>
                             )}
@@ -159,7 +159,7 @@ const ConfirmMoveBottomSheet: React.FC<ConfirmMoveBottomSheetProps> = ({
                                 className="w-full py-5 rounded-[28px] items-center"
                             >
                                 <Text className="text-white text-[16px] font-inter-semibold">
-                                    {isLoading ? 'Please wait...' : type === 'packer' ? 'Confirm & Move' : 'Move to Partial'}
+                                    {isLoading ? 'Please wait...' : type === 'checker' ? 'Confirm & Move' : 'Move to Partial'}
                                 </Text>
                             </TouchableOpacity>
                         </Animated.View>

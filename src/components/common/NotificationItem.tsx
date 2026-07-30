@@ -59,16 +59,16 @@ const NotificationItem: React.FC<Props> = memo(({ notification, index }) => {
 
     const handlePress = useCallback(() => {
         // Deep Linking Logic with Redundancy Check
-        const isAlreadyOnChecker = (segments as string[]).includes('checker');
+        const isAlreadyOnPicker = (segments as string[]).includes('picker');
         
         if (notification.orderId) {
             if (activeTab !== 'new') {
                 setActiveTab('new');
             }
             
-            // Only push if not already on the checker view to avoid stacking
-            if (!isAlreadyOnChecker) {
-                router.push('/(tabs)/checker');
+            // Only push if not already on the picker view to avoid stacking
+            if (!isAlreadyOnPicker) {
+                router.push('/(tabs)/picker');
             }
         }
         

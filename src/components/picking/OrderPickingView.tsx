@@ -23,6 +23,8 @@ import { icons } from '@/src/constants/icons';
 import colors from '@/src/theme/colors';
 import { ItemPickingSkeletonList } from './ItemPickingSkeleton';
 
+
+
 interface OrderPickingViewProps {
     orderId: string;
     expiresAt?: string;
@@ -224,7 +226,7 @@ const OrderPickingView: React.FC<OrderPickingViewProps> = ({ orderId, expiresAt,
         await fulfillmentApi.pick(orderId, items);
     };
 
-    const handleMoveToPacker = async () => {
+    const handleMoveToChecker = async () => {
         const items = pickingItems.map(item => ({
             orderItemId: item.id,
             pickedQuantity: item.pickedQty ?? item.requiredQty,
@@ -239,7 +241,7 @@ const OrderPickingView: React.FC<OrderPickingViewProps> = ({ orderId, expiresAt,
             if (isAnyPartial) {
                 await handleMovePartial();
             } else {
-                await handleMoveToPacker();
+                await handleMoveToChecker();
             }
             setLockExpiresAt(undefined);
             setConfirmSheetVisible(false);
@@ -398,11 +400,11 @@ const OrderPickingView: React.FC<OrderPickingViewProps> = ({ orderId, expiresAt,
                 isVisible={isConfirmSheetVisible}
                 onClose={() => { if (!isMoving) setConfirmSheetVisible(false); }}
                 onConfirm={handleConfirmMove}
-                type={isAnyPartial ? 'partial' : 'packer'}
+                type={isAnyPartial ? 'partial' : 'checker'}
                 isLoading={isMoving}
                 message={isAnyPartial
                     ? "Are you sure you want to move this order to partial?"
-                    : "Are you sure you want to move this order to packing?"
+                    : "Are you sure you want to move this order to checking?"
                 }
             />
 

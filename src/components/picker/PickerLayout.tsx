@@ -117,7 +117,7 @@ export const PickerLayout = () => {
                 {/* Header */}
                 <View className="px-5 py-6 bg-white flex-row justify-between items-center">
                     <Text className="text-[28px] font-inter-bold text-[#222222] tracking-tighter">
-                        Checker
+                        Picker
                     </Text>
                     <TouchableOpacity
                         onPress={() => setShowSearch(prev => !prev)}

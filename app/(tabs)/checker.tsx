@@ -1,2 +1,2 @@
-import { PickerLayout } from '@/src/components/picker/PickerLayout';
-export default PickerLayout;
+import { PackerLayout } from '@/src/components/packer/PackerLayout';
+export default PackerLayout;

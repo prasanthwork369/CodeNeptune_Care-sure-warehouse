@@ -5,6 +5,8 @@ import { Image } from 'expo-image';
 import { OrderItem, BatchRow } from '@/src/types/order.types';
 import { icons } from '@/src/constants/icons';
 import { colors } from '@/src/theme/colors';
+import { FULFILLMENT_TYPE, FULFILLMENT_TYPE_LABELS } from '@/src/constants/order.constants';
+
 
 interface OrderItemCardProps {
     item: OrderItem;
@@ -198,6 +200,23 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ item, batches, onToggleSt
                                         EXP {item.expiryDate || '05/2026'}
                                     </Text>
                                 </View>
+                                {!!item.fulfillmentType && (
+                                    <View style={{
+                                        backgroundColor: item.fulfillmentType === FULFILLMENT_TYPE.ON_DEMAND_PROCUREMENT ? '#FDE8E8' : '#E8F5E9',
+                                        borderRadius: 999,
+                                        paddingHorizontal: 12,
+                                        paddingVertical: 6,
+                                        overflow: 'hidden'
+                                    }}>
+                                        <Text style={{
+                                            color: item.fulfillmentType === FULFILLMENT_TYPE.ON_DEMAND_PROCUREMENT ? '#D32F2F' : '#2E7D32',
+                                            fontSize: 11,
+                                            fontFamily: 'Inter_600SemiBold'
+                                        }}>
+                                            {FULFILLMENT_TYPE_LABELS[item.fulfillmentType]}
+                                        </Text>
+                                    </View>
+                                )}
                             </View>
 
                             {/* Qty */}

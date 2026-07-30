@@ -47,9 +47,9 @@ const FloatingTabBar = ({ state, navigation }: BottomTabBarProps) => {
 
     const isTabAccessible = useMemo(() => (tabName: string): boolean => {
         switch (tabName) {
+            case 'picker':     return isAdmin || permissions.includes('picker-panel:read');
             case 'checker':
-            case 'picker':     return isAdmin || permissions.includes('picker-panel:read') || permissions.includes('checker-panel:read');
-            case 'packer':     return isAdmin || permissions.includes('packer-panel:read');
+            case 'packer':     return isAdmin || permissions.includes('checker-panel:read') || permissions.includes('packer-panel:read');
             case 'dispatcher': return isAdmin || permissions.includes('dispatcher-panel:read') || permissions.includes('dispatcher-panel:update');
             default:           return true;
         }

@@ -113,7 +113,7 @@ export const notificationService = {
 
       // Deep Linking Navigation
       useOrderStore.getState().setActiveTab('new');
-      router.push('/(tabs)/checker');
+      router.push('/(tabs)/picker');
     }
   }
 };

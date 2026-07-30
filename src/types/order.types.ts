@@ -1,3 +1,5 @@
+import { FulfillmentTypeValue } from '../constants/order.constants';
+
 export type OrderStatus = 'new' | 'partial' | 'completed';
 
 export interface BatchRow {
@@ -18,6 +20,7 @@ export interface OrderItem {
     description?: string;
     status: 'pending' | 'partial' | 'completed' | 'picked' | 'packed';
     image?: string;
+    fulfillmentType?: FulfillmentTypeValue;
 }
 
 export interface Order {
@@ -43,6 +46,7 @@ export interface Order {
     totalItems?: number;
     // Field for full picking list
     pickingItems?: OrderItem[];
+    pickedBy?: string;
 }
 
 export interface ApiOrderItem {
@@ -58,6 +62,7 @@ export interface ApiOrderItem {
     status: string;
     batchNumber?: string;
     expiryDate?: string;
+    fulfillmentType?: FulfillmentTypeValue;
 }
 
 export interface ApiOrder {

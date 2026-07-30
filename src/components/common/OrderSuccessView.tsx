@@ -67,7 +67,10 @@ const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({ title, subtitle, ba
                 <TouchableOpacity
                     className="flex-1 h-[58px] rounded-[20px] items-center justify-center mr-2"
                     style={{ backgroundColor: '#DCDEDC' }}
-                    onPress={() => router.dismissAll()}
+                    onPress={() => {
+                        const target = backRoute || '/(tabs)/checker';
+                        router.replace(target as any);
+                    }}
                 >
                     <Text className="text-[15px] font-inter-semibold text-[#222222]">{backLabel}</Text>
                 </TouchableOpacity>

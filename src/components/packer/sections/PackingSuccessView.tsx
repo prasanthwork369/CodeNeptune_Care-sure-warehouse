@@ -5,8 +5,8 @@ const PackingSuccessView = () => (
     <OrderSuccessView
         title="Order sent to dispatch"
         subtitle="All items verified and packed"
-        backLabel="Back to Packer"
-        backRoute="/(tabs)/packer"
+        backLabel="Back to Checker"
+        backRoute="/(tabs)/checker"
     />
 );
 

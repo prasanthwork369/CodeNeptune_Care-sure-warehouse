@@ -19,6 +19,7 @@ export const mapOrder = (apiOrder: ApiOrder): Order => {
         image: it.medicineSnapshot.thumbnailUrl || (it.medicineSnapshot as any).imageUrl || (it.medicineSnapshot as any).image || undefined,
         batchNo: it.batchNumber,
         expiryDate: it.expiryDate ? formatExpiryDate(it.expiryDate) : undefined,
+        fulfillmentType: it.fulfillmentType as any,
     })) || [];
 
     const orderImages = apiOrder.items
@@ -54,6 +55,9 @@ export const mapOrder = (apiOrder: ApiOrder): Order => {
         pickedCount,
         totalCount,
         stockStatus: outOfStockMeds.length === 0 ? 'available' : 'waiting',
+        pickedBy: (apiOrder as any).picker
+            ? [(apiOrder as any).picker.firstName, (apiOrder as any).picker.lastName].filter(Boolean).join(' ')
+            : (apiOrder as any).pickerName || (apiOrder as any).pickedBy || undefined,
     };
 };
 

@@ -72,7 +72,7 @@ export function useSyncFulfillment() {
             queryClient.invalidateQueries({ queryKey: ['orders'] });
             queryClient.invalidateQueries({ queryKey: ['picker-picked'] });
             queryClient.invalidateQueries({ queryKey: ['dispatched-orders'] });
-            queryClient.invalidateQueries({ queryKey: ['packer-packed'] });
+            queryClient.invalidateQueries({ queryKey: ['checker-packed'] });
             queryClient.invalidateQueries({ queryKey: ['dispatcher-order'] });
             queryClient.invalidateQueries({ queryKey: ['home-stats'] });
         };

@@ -13,3 +13,24 @@ export const ORDER_STATUS = {
 } as const;
 
 export type OrderStatusValue = typeof ORDER_STATUS[keyof typeof ORDER_STATUS];
+
+/**
+ * Item Fulfillment Type Status Codes
+ * 1: USED_FROM_STOCK (Deducted from physical warehouse stock)
+ * 2: ON_DEMAND_PROCUREMENT (Stock is 0 or batch expired — sourced on demand)
+ */
+export const FULFILLMENT_TYPE = {
+  USED_FROM_STOCK: 1,
+  ON_DEMAND_PROCUREMENT: 2,
+} as const;
+
+export type FulfillmentTypeValue = typeof FULFILLMENT_TYPE[keyof typeof FULFILLMENT_TYPE];
+
+/**
+ * Human-readable Display Labels
+ */
+export const FULFILLMENT_TYPE_LABELS: Record<FulfillmentTypeValue, string> = {
+  [FULFILLMENT_TYPE.USED_FROM_STOCK]: 'USED FROM STOCK',
+  [FULFILLMENT_TYPE.ON_DEMAND_PROCUREMENT]: 'ON DEMAND PROCUREMENT',
+};
+
