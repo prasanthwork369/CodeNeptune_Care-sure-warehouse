@@ -52,11 +52,10 @@ const FloatingTabBar = ({ state, navigation }: BottomTabBarProps) => {
           case "picker":
             return isAdmin || permissions.includes("picker-panel:read");
           case "checker":
-          case "packer":
             return (
               isAdmin ||
-              permissions.includes("checker-panel:read") ||
-              permissions.includes("packer-panel:read")
+              roles.includes("checker") ||
+              permissions.includes("checker-panel:read")
             );
           case "dispatcher":
             return (
@@ -84,17 +83,15 @@ const FloatingTabBar = ({ state, navigation }: BottomTabBarProps) => {
   // tabWidth as SharedValue so pan worklet runs entirely on UI thread
   const tabWidthSV = useSharedValue(0);
 
-  // Cancel any in-flight animation and snap instantly on navigation-driven changes
+  // Smooth spring transition when navigation state changes
   useEffect(() => {
     const idx = state.index;
     runOnUI(() => {
       "worklet";
-      cancelAnimation(leaderX);
-      cancelAnimation(followerX);
       isInteracting.value = 0;
       activeIndexSV.value = idx;
-      leaderX.value = idx;
-      followerX.value = idx;
+      leaderX.value = withSpring(idx, SNAP_SPRING);
+      followerX.value = withSpring(idx, TRAIL_SPRING);
     })();
   }, [state.index]);
 

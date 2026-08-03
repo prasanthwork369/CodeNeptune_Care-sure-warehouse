@@ -28,8 +28,8 @@ export const HomeLayout: React.FC = () => {
   const hasPickerAccess = isAdmin || permissions.includes("picker-panel:read");
   const hasCheckerAccess =
     isAdmin ||
-    permissions.includes("checker-panel:read") ||
-    permissions.includes("packer-panel:read");
+    roles.includes("checker") ||
+    permissions.includes("checker-panel:read");
   const hasDispatcherAccess =
     isAdmin ||
     permissions.includes("dispatcher-panel:read") ||

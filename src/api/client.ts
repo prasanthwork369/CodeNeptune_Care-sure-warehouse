@@ -3,6 +3,7 @@ import { API_BASE_URL, API_ENDPOINTS, API_TIMEOUT } from "@/src/utils/urls";
 import axios, { AxiosInstance } from "axios";
 import { toAppError } from "@/src/api/errors";
 import { requestQueue } from "@/src/utils/requestQueue";
+import { useNetworkStore } from "@/src/store/useNetworkStore";
 
 const MUTATION_METHODS = new Set(["post", "put", "patch", "delete"]);
 
@@ -45,6 +46,15 @@ export const apiClient: AxiosInstance = axios.create({
 
 // Synchronous request interceptor — reads from in-memory token (no async)
 apiClient.interceptors.request.use((config) => {
+  const { isConnected } = useNetworkStore.getState();
+  if (isConnected === false) {
+    useNetworkStore.getState().showOfflineAlert();
+    return Promise.reject(
+      Object.assign(new Error("Network offline"), {
+        code: "NETWORK_OFFLINE",
+      }),
+    );
+  }
   if (_accessToken) {
     config.headers.Authorization = `Bearer ${_accessToken}`;
   }

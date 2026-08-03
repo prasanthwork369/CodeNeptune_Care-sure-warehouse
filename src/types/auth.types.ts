@@ -1,4 +1,4 @@
-export type UserRole = "picker" | "packer" | "dispatcher";
+export type UserRole = "picker" | "checker" | "dispatcher";
 
 export interface User {
   id: string;

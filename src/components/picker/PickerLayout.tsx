@@ -158,6 +158,7 @@ export const PickerLayout = () => {
   return (
     <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
       <View className="flex-1 bg-white">
+
         {/* Header */}
         <View className="px-5 py-6 bg-white flex-row justify-between items-center">
           <Text className="text-[28px] font-inter-bold text-[#222222] tracking-tighter">

@@ -30,6 +30,7 @@ import Animated, {
   cancelAnimation,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import hapticFeedback from "@/src/utils/haptics";
 
 const SCAN_SIZE = 300;
 
@@ -150,10 +151,12 @@ const QRScanner = () => {
       const cleanId = data.replace("#", "").trim();
 
       if (!cleanId) {
+        hapticFeedback.scanError();
         setScanned(false);
         return;
       }
 
+      hapticFeedback.scanSuccess();
       navigate(cleanId);
     },
     [scanned, navigate],

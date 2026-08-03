@@ -9,6 +9,7 @@ import {
   FULFILLMENT_TYPE,
   FULFILLMENT_TYPE_LABELS,
 } from "@/src/constants/order.constants";
+import hapticFeedback from "@/src/utils/haptics";
 
 interface OrderItemCardProps {
   item: OrderItem;
@@ -56,6 +57,7 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({
 
   const handleCardPress = () => {
     if (isBatched || isPartial) return;
+    hapticFeedback.medium();
     onToggleStatus(item.id, isCompleted ? "pending" : "completed");
   };
 
