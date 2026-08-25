@@ -1,8 +1,8 @@
 import { useLocalSearchParams } from "expo-router";
-import CompletedOrderView from "@/src/components/completed/CompletedOrderView";
+import { CompletedOrderLayout } from "@/src/features/picker/screens/CompletedOrderLayout";
 
 export default function CompletedDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  return <CompletedOrderView orderId={id} />;
+  return <CompletedOrderLayout orderId={id} />;
 }

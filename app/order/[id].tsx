@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from "expo-router";
-import OrderPickingView from "@/src/components/picking/OrderPickingView";
+import { OrderPickingLayout } from "@/src/features/picker/screens/OrderPickingLayout";
 
 export default function OrderDetailsScreen() {
   const { id, expiresAt, orderId } = useLocalSearchParams<{
@@ -9,7 +9,7 @@ export default function OrderDetailsScreen() {
   }>();
 
   return (
-    <OrderPickingView
+    <OrderPickingLayout
       orderId={id}
       expiresAt={expiresAt}
       displayOrderId={orderId}

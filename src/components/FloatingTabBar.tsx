@@ -396,4 +396,6 @@ const TabItem = React.memo(
   },
 );
 
+TabItem.displayName = "TabItem";
+
 export default FloatingTabBar;

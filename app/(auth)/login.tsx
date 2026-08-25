@@ -1,2 +1,3 @@
-import { LoginLayout } from "@/src/components/auth/LoginLayout";
+import { LoginLayout } from "@/src/features/auth/screens/LoginLayout";
+
 export default LoginLayout;

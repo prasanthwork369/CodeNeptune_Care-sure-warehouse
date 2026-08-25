@@ -1,4 +1,4 @@
-// DEPRECATED: Use '@/src/types/*.types' instead
-export * from "../types/auth.types";
-export * from "../types/order.types";
-export * from "../types/stat.types";
+// DEPRECATED: Use '@/src/features/<feature>/types/*.types' instead
+export * from "../features/auth/types/auth.types";
+export * from "../features/picker/types/order.types";
+export * from "../features/home/types/stat.types";

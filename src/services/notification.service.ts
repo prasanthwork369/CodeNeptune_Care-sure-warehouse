@@ -5,7 +5,7 @@ import {
   useNotificationStore,
   NotificationType,
 } from "../store/useNotificationStore";
-import { useOrderStore } from "../store/useOrderStore";
+import { useOrderStore } from "@/src/features/picker/store/useOrderStore";
 
 /**
  * Configure global foreground handler (Suppresses OS banners when app is open)

@@ -6,7 +6,7 @@ import React, { useCallback } from "react";
 import {
   useSyncFulfillment,
   useReleaseStaleLocks,
-} from "@/src/hooks/useFulfillment";
+} from "@/src/features/picker/hooks/useFulfillment";
 
 function FulfillmentSync() {
   useSyncFulfillment();

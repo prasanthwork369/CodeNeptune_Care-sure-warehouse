@@ -24,7 +24,7 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { colors } from "@/src/theme/colors";
 import { useRouter, useSegments } from "expo-router";
-import { useOrderStore } from "@/src/store/useOrderStore";
+import { useOrderStore } from "@/src/features/picker/store/useOrderStore";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const SWIPE_THRESHOLD = SCREEN_WIDTH * 0.3;
@@ -268,5 +268,7 @@ const NotificationItem: React.FC<Props> = memo(({ notification, index }) => {
     </GestureDetector>
   );
 });
+
+NotificationItem.displayName = "NotificationItem";
 
 export default NotificationItem;

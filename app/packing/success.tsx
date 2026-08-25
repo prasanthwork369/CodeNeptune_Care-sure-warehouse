@@ -1,5 +1,3 @@
-import PackingSuccessView from "@/src/components/packer/sections/PackingSuccessView";
+import { PackingSuccessLayout } from "@/src/features/checker/screens/PackingSuccessLayout";
 
-export default function PackingSuccessRoute() {
-  return <PackingSuccessView />;
-}
+export default PackingSuccessLayout;

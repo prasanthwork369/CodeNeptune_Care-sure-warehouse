@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { User } from "@/src/types/auth.types";
+import { User } from "@/src/features/auth/types/auth.types";
 import { tokenStorage } from "@/src/lib/storage";
 import { setAccessToken } from "@/src/api/client";
-import { authApi } from "@/src/api/auth.api";
+import { authApi } from "@/src/features/auth/api/auth.api";
 import { decodeJWT } from "@/src/utils/jwt";
 
 interface AuthState {

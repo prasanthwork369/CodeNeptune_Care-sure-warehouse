@@ -1,5 +1,3 @@
-import DispatchSuccessView from "@/src/components/dispatcher/sections/DispatchSuccessView";
+import { DispatchSuccessLayout } from "@/src/features/dispatcher/screens/DispatchSuccessLayout";
 
-export default function DispatchSuccessRoute() {
-  return <DispatchSuccessView />;
-}
+export default DispatchSuccessLayout;

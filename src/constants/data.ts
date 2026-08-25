@@ -1,6 +1,6 @@
 import { icons } from "./icons";
-import { Order, OrderItem } from "../types/order.types";
-import { WarehouseStat } from "../types/stat.types";
+import { Order, OrderItem } from '@/src/features/picker/types/order.types';
+import { WarehouseStat } from "@/src/features/home/types/stat.types";
 
 export const APP_TITLE = {
   name: "CareSure",

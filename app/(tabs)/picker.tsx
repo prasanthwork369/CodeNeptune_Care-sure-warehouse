@@ -1,2 +1,3 @@
-import { PickerLayout } from "@/src/components/picker/PickerLayout";
+import { PickerLayout } from "@/src/features/picker/screens/PickerLayout";
+
 export default PickerLayout;

@@ -1,5 +1,3 @@
-import OrderStatusView from "@/src/components/dispatcher/sections/OrderStatusView";
+import { OrderStatusLayout } from "@/src/features/dispatcher/screens/OrderStatusLayout";
 
-export default function OrderStatusRoute() {
-  return <OrderStatusView />;
-}
+export default OrderStatusLayout;

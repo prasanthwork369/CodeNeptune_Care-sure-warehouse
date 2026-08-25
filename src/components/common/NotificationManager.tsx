@@ -26,6 +26,8 @@ const NotificationManager = memo(() => {
   );
 });
 
+NotificationManager.displayName = "NotificationManager";
+
 const styles = StyleSheet.create({
   container: {
     position: "absolute",

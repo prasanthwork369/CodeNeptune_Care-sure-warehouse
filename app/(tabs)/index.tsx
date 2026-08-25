@@ -1,2 +1,3 @@
-import { HomeLayout } from "@/src/components/home/HomeLayout";
+import { HomeLayout } from "@/src/features/home/screens/HomeLayout";
+
 export default HomeLayout;
