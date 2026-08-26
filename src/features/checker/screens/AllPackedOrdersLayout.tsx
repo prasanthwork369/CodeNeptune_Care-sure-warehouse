@@ -49,7 +49,7 @@ export const AllPackedOrdersLayout = () => {
           className="text-[18px] font-inter-bold"
           style={{ color: colors.text.DEFAULT }}
         >
-          Packed Orders
+          Checked Orders
         </Text>
       </View>
 
@@ -101,7 +101,7 @@ export const AllPackedOrdersLayout = () => {
                 >
                   {searchQuery
                     ? "No orders match your search"
-                    : "No packed orders"}
+                    : "No checked orders"}
                 </Text>
               </View>
             )}

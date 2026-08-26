@@ -1,18 +1,40 @@
 export const ORDER_STATUS = {
   CANCELLED: 0,
-  NEW: 1, // Awaiting Doctor Call/Review
-  DOCTOR_APPROVED: 2, // Awaiting Pharmacist Verification
+  NEW: 1,                 // Awaiting Doctor Call/Review
+  DOCTOR_APPROVED: 2,     // Awaiting Pharmacist Verification
   PHARMACIST_APPROVED: 3, // Awaiting Picker (Confirmed for Inventory)
-  PICKED: 4, // Awaiting Packing
-  PACKED: 5, // Awaiting Shipment
-  SHIPPED: 6, // In Transit
-  DELIVERED: 7, // Delivered to Customer
-  CALLER_REVIEW: 8, // Moved back to Caller for clarification
-  PARTIALLY_PICKED: 9, // Partially picked, awaiting resolution
-  READY_FOR_DISPATCH: 12, // Packed and awaiting dispatcher
+  PICKED: 4,              // Awaiting Checking
+  CHECKED: 5,             // Checker verified & boxed items — awaiting Packer hand-off
+  SHIPPED: 6,             // In Transit
+  DELIVERED: 7,           // Delivered to Customer
+  CALLER_REVIEW: 8,       // Moved back to Caller for clarification
+  PARTIALLY_PICKED: 9,    // Partially Picked (Shortage found)
+  RETURNED_FROM_CALLER: 10, // Returned from Caller back to Doctor
+  RETURNED_FROM_PHARMACIST: 11, // Returned from Pharmacist back to Doctor
+  DISPATCHER_CANCEL: 12,   // Dispatch Rejected/Cancelled
+  DRAFT: 13,               // Draft saved
+  PACKED: 14,              // Packer confirmed hand-off — awaiting Shipment
 } as const;
 
 export type OrderStatusValue = (typeof ORDER_STATUS)[keyof typeof ORDER_STATUS];
+
+export const ORDER_STATUS_LABELS: Record<OrderStatusValue, string> = {
+  [ORDER_STATUS.NEW]: 'NEW',
+  [ORDER_STATUS.CANCELLED]: 'CANCELLED',
+  [ORDER_STATUS.DOCTOR_APPROVED]: 'DOCTOR APPROVED',
+  [ORDER_STATUS.PHARMACIST_APPROVED]: 'PHARMACIST APPROVED',
+  [ORDER_STATUS.PICKED]: 'PICKED',
+  [ORDER_STATUS.CHECKED]: 'CHECKED',
+  [ORDER_STATUS.PACKED]: 'PACKED',
+  [ORDER_STATUS.SHIPPED]: 'SHIPPED',
+  [ORDER_STATUS.DELIVERED]: 'DELIVERED',
+  [ORDER_STATUS.CALLER_REVIEW]: 'CALLER REVIEW',
+  [ORDER_STATUS.PARTIALLY_PICKED]: 'PARTIALLY PICKED',
+  [ORDER_STATUS.RETURNED_FROM_CALLER]: 'RETURNED FROM CALLER',
+  [ORDER_STATUS.RETURNED_FROM_PHARMACIST]: 'RETURNED FROM PHARMACIST',
+  [ORDER_STATUS.DISPATCHER_CANCEL]: 'DISPATCH CANCELLED',
+  [ORDER_STATUS.DRAFT]: 'DRAFT',
+};
 
 /**
  * Item Fulfillment Type Status Codes

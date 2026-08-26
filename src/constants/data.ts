@@ -230,7 +230,7 @@ export const ORDERS: Order[] = [
   },
 ];
 
-// 20 Packed Orders for the Packer module
+// 20 Checked Orders for the Packer module
 export const PACKED_ORDERS: Order[] = [
   {
     id: "#RX-9824",

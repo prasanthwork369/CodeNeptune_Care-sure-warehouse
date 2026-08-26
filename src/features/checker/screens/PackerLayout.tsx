@@ -88,7 +88,7 @@ export const PackerLayout = () => {
                 style={{ color: colors.text.DEFAULT }}
                 className="text-[20px] font-inter-bold"
               >
-                Packed Orders
+                Checked Orders
               </Text>
               <Text
                 style={{ color: colors.text.secondary }}
@@ -140,7 +140,7 @@ export const PackerLayout = () => {
                       style={{ color: colors.text.secondary }}
                       className="font-inter text-[14px]"
                     >
-                      No packed orders today
+                      No checked orders today
                     </Text>
                   </View>
                 )

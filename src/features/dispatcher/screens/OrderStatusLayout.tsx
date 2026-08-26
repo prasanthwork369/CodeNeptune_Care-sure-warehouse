@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -16,7 +16,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { dispatcherApi } from "@/src/features/dispatcher/api/dispatcher.api";
 import { orderApi } from "@/src/features/picker/api/order.api";
 import { mapOrder } from "@/src/features/picker/services/order.service";
-import { ORDER_STATUS } from "@/src/features/picker/constants/order.constants";
+import {
+  ORDER_STATUS,
+  ORDER_STATUS_LABELS,
+  OrderStatusValue,
+} from "@/src/features/picker/constants/order.constants";
 import { icons } from "@/src/constants/icons";
 import { colors } from "@/src/theme/colors";
 import { formatOrderDate } from "@/src/utils/dateUtils";
@@ -55,15 +59,29 @@ export const OrderStatusLayout: React.FC<OrderStatusLayoutProps> = ({ orderId: p
 
   const order = apiOrder ? mapOrder(apiOrder) : null;
   const rawStatus = Number(apiOrder?.status);
-  const isReady =
-    rawStatus === ORDER_STATUS.PACKED || rawStatus === ORDER_STATUS.SHIPPED; // 5 or 6
+  const isReady = rawStatus === ORDER_STATUS.PACKED
+
   const isCancelled =
     rawStatus === ORDER_STATUS.CANCELLED ||
-    rawStatus === ORDER_STATUS.DELIVERED; // 0 or 7
+    rawStatus === ORDER_STATUS.DISPATCHER_CANCEL
 
   const cancelledAt = (apiOrder as any)?.cancelledAt
     ? formatOrderDate((apiOrder as any).cancelledAt)
     : null;
+
+  useEffect(() => {
+    if (apiOrder) {
+      console.log("📋 [OrderStatusLayout] Order loaded:", {
+        id: apiOrder.id,
+        orderId: apiOrder.orderId,
+        status: apiOrder.status,
+        rawStatus,
+        isReady,
+        isCancelled,
+        customerName: order?.customerName || "N/A",
+      });
+    }
+  }, [apiOrder, rawStatus, isReady, isCancelled, order?.customerName]);
 
   // ── Dispatch ─────────────────────────────────────────────────────────────
   const { mutateAsync: doDispatch, isPending: isDispatching } = useMutation({
@@ -192,11 +210,12 @@ export const OrderStatusLayout: React.FC<OrderStatusLayoutProps> = ({ orderId: p
             #{order?.orderId || orderId}
           </Text>
           <Text className="text-[15px] font-inter text-[#6A6A6A]">
-            {isReady
-              ? "Ready for Delivery"
-              : isCancelled
-                ? "Order Cancelled"
-                : `Status: ${rawStatus}`}
+            {ORDER_STATUS_LABELS[rawStatus as OrderStatusValue] ||
+              (isReady
+                ? "Ready for Delivery"
+                : isCancelled
+                  ? "Order Cancelled"
+                  : `Status: ${rawStatus}`)}
           </Text>
         </View>
 
