@@ -1,5 +1,11 @@
-import React, { useState } from "react";
-import { ScrollView, View, Text, RefreshControl } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  InteractionManager,
+  ScrollView,
+  View,
+  Text,
+  RefreshControl,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTabBarStore } from "@/src/store/useTabBarStore";
@@ -13,6 +19,7 @@ import { useHomeQuery } from "../hooks/useHome";
 import DashboardHeader from "../components/DashboardHeader";
 import StatsCard from "../components/StatsCard";
 import { HomeSkeletonList } from "../components/HomeSkeleton";
+import { pushNotificationService } from "@/src/services/pushNotification.service";
 
 export const HomeLayout: React.FC = () => {
   const navigation = useNavigation<any>();
@@ -39,6 +46,24 @@ export const HomeLayout: React.FC = () => {
   const statsList = warehouseStats as unknown as any[] | undefined;
   const isInitialLoading =
     (statsLoading && !statsList?.length) || (!isLoaded && !user);
+
+  useEffect(() => {
+    // Let Home paint and navigation animations finish before showing the
+    // operating-system notification permission dialog.
+    const task = InteractionManager.runAfterInteractions(() => {
+      void pushNotificationService
+        .registerForPushAsync()
+        .then((token) => {
+          if (token && __DEV__) console.log("Expo Push Token:", token);
+        })
+        .catch((error) => {
+          if (__DEV__)
+            console.warn("Failed to register for push notifications:", error);
+        });
+    });
+
+    return () => task.cancel();
+  }, []);
 
   const onRefresh = async () => {
     setRefreshing(true);

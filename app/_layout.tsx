@@ -67,15 +67,9 @@ export default function RootLayout() {
     // 2. Initialize network listener
     const unsubscribeNet = initNetworkListener(axiosInstance);
 
-    // 3. Setup Notifications (Production Architecture)
-    const setupNotifications = async () => {
-      // Register for tokens/permissions
-      const {
-        pushNotificationService,
-      } = require("@/src/services/pushNotification.service");
-      const token = await pushNotificationService.registerForPushAsync();
-      if (token) console.log("📲 Expo Push Token:", token);
-
+    // 3. Handle an initial notification response without requesting permission.
+    // Push permission is requested after the authenticated Home screen renders.
+    const handleInitialNotificationResponse = async () => {
       // Check if app was opened by a notification (Killed state)
       const initialResponse =
         await Notifications.getLastNotificationResponseAsync();
@@ -84,7 +78,7 @@ export default function RootLayout() {
       }
     };
 
-    setupNotifications();
+    handleInitialNotificationResponse();
 
     // Listener for foreground notifications (Suppressed OS banner, Trigger Custom UI)
     const notificationListener = Notifications.addNotificationReceivedListener(

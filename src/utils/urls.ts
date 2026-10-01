@@ -1,9 +1,38 @@
-export const LIVE = false;
+// Runtime source of environment URLs. Values come from the EAS environment
+// (cloud builds / updates) or .env.local (local development).
+const APP_ENVS = ["development", "preview", "production"] as const;
 
-const PROD_URL = "https://care-sure-api-gateway.onrender.com";
-const QA_URL = "https://qa-csapi.codeneptune.com";
+type AppEnv = (typeof APP_ENVS)[number];
 
-export const API_BASE_URL = LIVE ? PROD_URL : QA_URL;
+const resolveAppEnv = (value: string | undefined): AppEnv => {
+  const env = value ?? "development";
+  if (!(APP_ENVS as readonly string[]).includes(env)) {
+    throw new Error(
+      `EXPO_PUBLIC_APP_ENV must be one of ${APP_ENVS.join(", ")} (got: ${env}).`,
+    );
+  }
+  return env as AppEnv;
+};
+
+const APP_ENV = resolveAppEnv(process.env.EXPO_PUBLIC_APP_ENV);
+
+const requireApiBaseUrl = (value: string | undefined) => {
+  if (!value) {
+    throw new Error(
+      `Missing EXPO_PUBLIC_API_BASE_URL for APP_ENV "${APP_ENV}". Set it in the EAS environment or .env.local (see .env.example).`,
+    );
+  }
+  if (APP_ENV === "production" && !value.startsWith("https://")) {
+    throw new Error(
+      `EXPO_PUBLIC_API_BASE_URL must be an https:// URL in production (got: ${value}).`,
+    );
+  }
+  return value;
+};
+
+export const API_BASE_URL = requireApiBaseUrl(
+  process.env.EXPO_PUBLIC_API_BASE_URL,
+);
 export const SITE_URL = API_BASE_URL;
 export const IMAGE_BASE_URL = API_BASE_URL;
 export const API_TIMEOUT = __DEV__ ? 60_000 : 15_000;
