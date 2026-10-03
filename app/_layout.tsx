@@ -21,24 +21,63 @@ import { initNetworkListener } from "@/src/utils/network";
 import { requestQueue } from "@/src/utils/requestQueue";
 import axiosInstance from "@/src/api/client";
 import { setUnauthorizedHandler } from "@/src/api/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { retryTransientOnce } from "@/src/api/errors";
+import {
+  QueryClient,
+  QueryClientProvider,
+  focusManager,
+} from "@tanstack/react-query";
+import { AppState, Platform } from "react-native";
 
 import * as Notifications from "expo-notifications";
 import { notificationService } from "@/src/services/notification.service";
 import { useNotificationStore } from "@/src/store/useNotificationStore";
+import {
+  useSyncFulfillment,
+  useReleaseStaleLocks,
+} from "@/src/features/picker/hooks/useFulfillment";
 
 SplashScreen.preventAutoHideAsync();
+
+// Mounted once at the root (not in the (tabs) layout) so there is exactly one
+// Socket.IO connection and one set of order/lock listeners per session, even
+// if the navigation stack ever holds more than one (tabs) instance. Both hooks
+// stay idle until the user is authenticated.
+function FulfillmentSync() {
+  useSyncFulfillment();
+  // Release locks orphaned by an app kill/reload mid-pick (otherwise the
+  // claimed order stays hidden from the queue for ~10 min)
+  useReleaseStaleLocks();
+  return null;
+}
 
 // Create a client for TanStack Query
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 2,
+      retry: retryTransientOnce,
       refetchOnWindowFocus: false,
+    },
+    mutations: {
+      // Never auto-retry state-changing requests (claim/pick/pack/dispatch)
+      retry: false,
     },
   },
 });
+
+// React Query has no `document` on native, so it treats the app as always
+// focused and keeps refetchInterval polling while backgrounded. Tie focus to
+// AppState instead; web keeps its built-in visibilitychange listener.
+if (Platform.OS !== "web") {
+  focusManager.setEventListener((handleFocus) => {
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (__DEV__) console.log(`[AppState] ${state}`);
+      handleFocus(state === "active");
+    });
+    return () => subscription.remove();
+  });
+}
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -136,6 +175,7 @@ export default function RootLayout() {
         <SafeAreaProvider>
           <StatusBar style="dark" />
           <NotificationManager />
+          <FulfillmentSync />
           <Stack screenOptions={{ headerShown: false }} />
           <NetworkToast />
         </SafeAreaProvider>

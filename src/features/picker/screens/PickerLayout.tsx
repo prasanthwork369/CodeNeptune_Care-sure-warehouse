@@ -13,6 +13,8 @@ import {
   Animated,
   Easing,
   TextInput,
+  ScrollView,
+  RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "expo-router";
@@ -43,6 +45,15 @@ const SEARCH_HEIGHT = 80;
 
 export const PickerLayout = () => {
   const { activeTab, setActiveTab } = useOrderStore();
+
+  const [isFocused, setIsFocused] = useState(true);
+  useFocusEffect(
+    useCallback(() => {
+      setIsFocused(true);
+      return () => setIsFocused(false);
+    }, []),
+  );
+
   const {
     data: orders = [],
     isLoading,
@@ -81,18 +92,12 @@ export const PickerLayout = () => {
     }
   }, [showSearch]);
 
-  const [isFocused, setIsFocused] = useState(true);
-  useFocusEffect(
-    useCallback(() => {
-      setIsFocused(true);
-      return () => setIsFocused(false);
-    }, []),
-  );
-
-  const { data: activeLocks = [] } = useQuery({
+  // No polling: kept fresh by lock socket events, reconnect resync and
+  // claim/release/extend refreshes. Disabled while unfocused, so changes
+  // invalidated meanwhile are refetched when Picker regains focus.
+  const { data: activeLocks = [], refetch: refetchLocks } = useQuery({
     queryKey: ["active-locks"],
     queryFn: fulfillmentApi.getActiveLocks,
-    refetchInterval: isFocused ? 10000 : false,
     enabled: isFocused,
   });
   const lockedOrderIds = useMemo(
@@ -130,7 +135,8 @@ export const PickerLayout = () => {
   const handleRefresh = async () => {
     setIsRefreshing(true);
     try {
-      await Promise.all([refetch(), refetchCompleted()]);
+      // Locks too — New Orders hides locked orders, and there is no polling
+      await Promise.all([refetch(), refetchCompleted(), refetchLocks()]);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     } catch (e) {
       if (__DEV__) console.error("Failed to refresh orders:", e);
@@ -142,12 +148,23 @@ export const PickerLayout = () => {
   const renderContent = (content: React.ReactNode) => {
     if (isLoading && !orders.length) return <OrderSkeletonList />;
     if (isError) {
+      // Scrollable so pull-to-refresh can recover from a failed load
       return (
-        <View className="py-20 items-center px-10" style={{ width }}>
-          <Text className="text-red-500 font-inter-medium text-center">
-            {(error as any)?.message || "Failed to load orders"}
-          </Text>
-        </View>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
+            />
+          }
+        >
+          <View className="py-20 items-center px-10" style={{ width }}>
+            <Text className="text-red-500 font-inter-medium text-center">
+              {(error as any)?.message || "Failed to load orders"}
+            </Text>
+          </View>
+        </ScrollView>
       );
     }
     return content;

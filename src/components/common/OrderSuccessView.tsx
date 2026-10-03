@@ -120,7 +120,10 @@ const OrderSuccessView: React.FC<OrderSuccessViewProps> = ({
             style={{ backgroundColor: "#DCDEDC" }}
             onPress={() => {
               const target = backRoute || "/(tabs)/checker";
-              router.replace(target as any);
+              // Pop back to the existing (tabs) instead of replacing this
+              // screen with a new one — replace stacked a fresh (tabs) tree
+              // on top of the old one after every packed/dispatched order
+              router.dismissTo(target as any);
             }}
           >
             <Text className="text-[15px] font-inter-semibold text-[#222222]">

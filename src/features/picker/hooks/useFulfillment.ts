@@ -1,5 +1,11 @@
 import { useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { refreshQueries } from "@/src/lib/refreshQueries";
 import { fulfillmentApi } from '@/src/features/picker/api/fulfillment.api';
 import { ExtendMinutes } from '@/src/features/picker/types/fulfillment.types';
 import { toAppError } from "@/src/api/errors";
@@ -56,26 +62,42 @@ export function useActiveLocks() {
   });
 }
 
+// Queries kept fresh by socket events (and resynced after a reconnect)
+const SYNCED_QUERY_KEYS = [
+  "active-locks",
+  "orders",
+  "picker-picked",
+  "dispatched-orders",
+  "checker-packed",
+  "dispatcher-order",
+  "home-stats",
+];
+
+const refreshSyncedQueries = (queryClient: QueryClient) =>
+  SYNCED_QUERY_KEYS.forEach((key) => refreshQueries(queryClient, [key]));
+
 /**
  * Synchronizes fulfillment state via WebSockets.
  * Listens for order lock events and invalidates relevant queries.
  */
 export function useSyncFulfillment() {
   const queryClient = useQueryClient();
-  const { on, isConnected } = useSocket();
+  const { on, isConnected, reconnectCount } = useSocket();
+
+  // Socket came back after a drop: events may have been missed while it was
+  // down, so refresh everything the event handlers keep fresh. Not run on the
+  // first connect — screens load their own data.
+  useEffect(() => {
+    if (reconnectCount === 0) return;
+    refreshSyncedQueries(queryClient);
+  }, [reconnectCount, queryClient]);
 
   useEffect(() => {
     if (!isConnected) return;
 
-    const invalidateAll = () => {
-      queryClient.invalidateQueries({ queryKey: ["active-locks"] });
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
-      queryClient.invalidateQueries({ queryKey: ["picker-picked"] });
-      queryClient.invalidateQueries({ queryKey: ["dispatched-orders"] });
-      queryClient.invalidateQueries({ queryKey: ["checker-packed"] });
-      queryClient.invalidateQueries({ queryKey: ["dispatcher-order"] });
-      queryClient.invalidateQueries({ queryKey: ["home-stats"] });
-    };
+    // refreshQueries: a burst of events (or an event racing our own mutation's
+    // refresh) never runs overlapping requests for the same query
+    const invalidateAll = () => refreshSyncedQueries(queryClient);
 
     // Listen for all plausible server event names — covers new orders + updates
     const events = [
@@ -122,9 +144,9 @@ export function useFulfillmentActions(orderId?: string) {
   const addNotification = useNotificationStore((s) => s.addNotification);
 
   const invalidate = () => {
-    queryClient.invalidateQueries({ queryKey: ["active-locks"] });
-    queryClient.invalidateQueries({ queryKey: ["orders"] });
-    queryClient.invalidateQueries({ queryKey: ["home-stats"] });
+    refreshQueries(queryClient, ["active-locks"]);
+    refreshQueries(queryClient, ["orders"]);
+    refreshQueries(queryClient, ["home-stats"]);
   };
 
   // ── Claim ─────────────────────────────────────────────────────────────────
@@ -173,7 +195,7 @@ export function useFulfillmentActions(orderId?: string) {
     mutationFn: ({ id, minutes }: { id: string; minutes: ExtendMinutes }) =>
       fulfillmentApi.extend(id, minutes),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["active-locks"] });
+      refreshQueries(queryClient, ["active-locks"]);
       addNotification({
         title: "Time extended",
         message: "Lock duration updated.",

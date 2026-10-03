@@ -4,6 +4,7 @@ import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
+import { refreshQueries } from "@/src/lib/refreshQueries";
 import { icons } from "@/src/constants/icons";
 import { colors } from "@/src/theme/colors";
 import { Order, OrderItem } from "@/src/features/picker/types/order.types";
@@ -555,12 +556,12 @@ export const OrderSummaryLayout: React.FC<OrderSummaryLayoutProps> = ({ orderId 
             await fulfillmentApi.pack(order.id, items, true);
 
             setShowInvoiceModal(false);
-            queryClient.invalidateQueries({ queryKey: ["home-stats"] });
+            refreshQueries(queryClient, ["home-stats"]);
             queryClient.invalidateQueries({
               queryKey: ["checker-packed-today"],
             });
-            queryClient.invalidateQueries({ queryKey: ["checker-packed"] });
-            queryClient.invalidateQueries({ queryKey: ["dispatched-orders"] });
+            refreshQueries(queryClient, ["checker-packed"]);
+            refreshQueries(queryClient, ["dispatched-orders"]);
             router.push({
               pathname: "/packing/success",
               params: { orderId: order.orderId || order.id, totalItems },

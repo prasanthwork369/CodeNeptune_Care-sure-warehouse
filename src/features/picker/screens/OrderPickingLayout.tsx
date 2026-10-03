@@ -14,6 +14,7 @@ import { orderService } from '@/src/features/picker/services/order.service';
 import { useFulfillmentActions } from '@/src/features/picker/hooks/useFulfillment';
 import { fulfillmentApi } from '@/src/features/picker/api/fulfillment.api';
 import { useQueryClient } from "@tanstack/react-query";
+import { refreshQueries } from "@/src/lib/refreshQueries";
 import { ExtendMinutes } from '@/src/features/picker/types/fulfillment.types';
 import OrderItemCard from "../components/OrderItemCard";
 import PickingProgressFooter from "../components/PickingProgressFooter";
@@ -304,7 +305,7 @@ export const OrderPickingLayout: React.FC<OrderPickingLayoutProps> = ({
       setLockExpiresAt(undefined);
       setConfirmSheetVisible(false);
       setActiveTab("new");
-      queryClient.invalidateQueries({ queryKey: ["home-stats"] });
+      refreshQueries(queryClient, ["home-stats"]);
       router.back();
     } catch {
       // Lock lost or API error — notification handled in fulfillmentApi, stay on screen

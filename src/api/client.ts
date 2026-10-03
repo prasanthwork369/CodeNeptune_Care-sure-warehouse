@@ -1,6 +1,7 @@
 import { tokenStorage } from "@/src/lib/storage";
 import { API_BASE_URL, API_ENDPOINTS, API_TIMEOUT } from "@/src/utils/urls";
 import axios, { AxiosInstance } from "axios";
+import { Platform } from "react-native";
 import { toAppError } from "@/src/api/errors";
 import { requestQueue } from "@/src/utils/requestQueue";
 import { useNetworkStore } from "@/src/store/useNetworkStore";
@@ -41,6 +42,11 @@ export const apiClient: AxiosInstance = axios.create({
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
+    // Don't keep the HTTP connection alive after each response. Android only:
+    // OkHttp honours a request `Connection: close` and drops the connection
+    // from its pool (also over HTTP/2, where the header itself isn't sent).
+    // iOS reserves this header (NSURLRequest) and browsers forbid it.
+    ...(Platform.OS === "android" && { Connection: "close" }),
   },
 });
 
@@ -58,14 +64,37 @@ apiClient.interceptors.request.use((config) => {
   if (_accessToken) {
     config.headers.Authorization = `Bearer ${_accessToken}`;
   }
+  if (__DEV__) (config as any)._startedAt = Date.now();
   return config;
 });
 
+// Dev-only live log: one line per finished request, with a running call count
+// per endpoint so repeated polling is easy to spot, e.g.
+//   [api] ✓ GET  orders/staff/picker-queue   200  276ms   #4
+const callCounts = new Map<string, number>();
+const logResponse = (config: any, status: number | string) => {
+  if (!__DEV__ || !config) return;
+  const method = (config.method ?? "get").toUpperCase();
+  const path = (config.url ?? "").replace(/^\/?api\/v\d+\//, "");
+  const key = `${method} ${path}`;
+  const count = (callCounts.get(key) ?? 0) + 1;
+  callCounts.set(key, count);
+  const ms = config._startedAt ? Date.now() - config._startedAt : "?";
+  const ok = typeof status === "number" && status < 400;
+  console.log(
+    `[api] ${ok ? "✓" : "✗"} ${method.padEnd(6)} ${path.padEnd(32)} ${String(status).padEnd(4)} ${String(ms).padStart(5)}ms  #${count}`,
+  );
+};
+
 // Response interceptor — offline queue + 401 refresh
 apiClient.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    logResponse(res.config, res.status);
+    return res;
+  },
   async (err) => {
     const original = err.config;
+    logResponse(original, err.response?.status ?? err.code ?? "ERR");
 
     // ── Offline: queue mutations for replay when connection returns ──────────
     const isNetworkError = !err.response && err.code !== "ECONNABORTED";

@@ -13,6 +13,7 @@ import BackButton from "@/src/components/common/BackButton";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { refreshQueries } from "@/src/lib/refreshQueries";
 import { dispatcherApi } from "@/src/features/dispatcher/api/dispatcher.api";
 import { orderApi } from "@/src/features/picker/api/order.api";
 import { mapOrder } from "@/src/features/picker/services/order.service";
@@ -54,7 +55,6 @@ export const OrderStatusLayout: React.FC<OrderStatusLayoutProps> = ({ orderId: p
     enabled: !!orderId,
     staleTime: 0,
     gcTime: 0,
-    retry: 1,
   });
 
   const order = apiOrder ? mapOrder(apiOrder) : null;
@@ -94,8 +94,8 @@ export const OrderStatusLayout: React.FC<OrderStatusLayoutProps> = ({ orderId: p
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["dispatched-orders"] });
-      queryClient.invalidateQueries({ queryKey: ["home-stats"] });
+      refreshQueries(queryClient, ["dispatched-orders"]);
+      refreshQueries(queryClient, ["home-stats"]);
       router.replace({
         pathname: "/dispatching/success" as any,
         params: {
@@ -118,7 +118,7 @@ export const OrderStatusLayout: React.FC<OrderStatusLayoutProps> = ({ orderId: p
     mutationFn: (reason: string) =>
       dispatcherApi.rejectDispatch(apiOrder!.id, reason),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["dispatched-orders"] });
+      refreshQueries(queryClient, ["dispatched-orders"]);
       router.back();
     },
     onError: (err: any) => {

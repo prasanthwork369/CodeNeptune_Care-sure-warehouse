@@ -59,6 +59,22 @@ export function toAppError(err: unknown): AppError {
   return new AppError("unknown", "Something went wrong");
 }
 
+// Gateway errors usually mean the upstream was briefly unavailable; other 5xx
+// and all 4xx are deterministic, so retrying just repeats the same failure.
+const TRANSIENT_STATUSES = new Set([502, 503, 504]);
+
+export function isTransientError(err: unknown): boolean {
+  const { kind, status } = toAppError(err);
+  if (kind === "network" || kind === "timeout") return true;
+  return status !== undefined && TRANSIENT_STATUSES.has(status);
+}
+
+// React Query `retry` option for reads: one retry, and only for transient
+// errors. Mutations must not use this — a retried claim/pick/pack/dispatch
+// could apply the same state change twice.
+export const retryTransientOnce = (failureCount: number, error: unknown) =>
+  failureCount < 1 && isTransientError(error);
+
 function isAxiosError(err: unknown): err is AxiosError {
   return (
     typeof err === "object" &&

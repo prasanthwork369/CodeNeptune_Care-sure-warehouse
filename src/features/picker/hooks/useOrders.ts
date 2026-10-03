@@ -1,14 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { refreshQueries } from "@/src/lib/refreshQueries";
 import { orderService } from '@/src/features/picker/services/order.service';
 import { toAppError } from "@/src/api/errors";
 import { useNotificationStore } from "@/src/store/useNotificationStore";
 import { ListOrdersParams } from '@/src/features/picker/types/order.types';
 
+// No polling: kept fresh by order socket events, reconnect resync and
+// mutation refreshes (useSyncFulfillment / useFulfillmentActions)
 export const useOrdersQuery = (params?: ListOrdersParams) => {
   return useQuery({
     queryKey: ["orders", params],
     queryFn: () => orderService.list(params),
-    refetchInterval: 15000, // 15s polling fallback when socket events are missed
   });
 };
 
@@ -42,7 +44,7 @@ export const useUpdateOrderStatus = () => {
       reason?: string;
     }) => orderService.updateStatus(id, status, reason),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      refreshQueries(queryClient, ["orders"]);
       addNotification({
         title: "Status updated",
         message: "Order status has been updated.",

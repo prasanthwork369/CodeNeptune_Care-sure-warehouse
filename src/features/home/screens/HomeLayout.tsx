@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   InteractionManager,
   ScrollView,
@@ -7,6 +7,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTabBarStore } from "@/src/store/useTabBarStore";
 import * as Haptics from "expo-haptics";
@@ -24,12 +25,25 @@ import { pushNotificationService } from "@/src/services/pushNotification.service
 export const HomeLayout: React.FC = () => {
   const navigation = useNavigation<any>();
   const { user, isLoaded, roles, permissions } = useAuthStore();
+
+  const [isFocused, setIsFocused] = useState(true);
   const {
     data: warehouseStats,
     isLoading: statsLoading,
     error: statsError,
     refetch: refetchStats,
-  } = useHomeQuery();
+  } = useHomeQuery({ isFocused });
+
+  // Refresh stats each time Home gains focus. cancelRefetch: false joins a
+  // fetch already in flight (e.g. the initial mount load) instead of starting
+  // a second request.
+  useFocusEffect(
+    useCallback(() => {
+      refetchStats({ cancelRefetch: false });
+      setIsFocused(true);
+      return () => setIsFocused(false);
+    }, [refetchStats]),
+  );
   const [refreshing, setRefreshing] = useState(false);
   const isAdmin = roles.includes("admin");
   const hasPickerAccess = isAdmin || permissions.includes("picker-panel:read");
