@@ -21,6 +21,14 @@ import DashboardHeader from "../components/DashboardHeader";
 import StatsCard from "../components/StatsCard";
 import { HomeSkeletonList } from "../components/HomeSkeleton";
 import { pushNotificationService } from "@/src/services/pushNotification.service";
+import { canAccessTab, PanelTab } from "@/src/utils/tabAccess";
+
+// Stat card id → the tab it opens.
+const STAT_TAB: Record<string, PanelTab> = {
+  picks: "picker",
+  packs: "checker",
+  dispatch: "dispatcher",
+};
 
 export const HomeLayout: React.FC = () => {
   const navigation = useNavigation<any>();
@@ -45,21 +53,10 @@ export const HomeLayout: React.FC = () => {
     }, [refetchStats]),
   );
   const [refreshing, setRefreshing] = useState(false);
-  const isAdmin = roles.includes("admin");
-  const hasPickerAccess = isAdmin || permissions.includes("picker-panel:read");
-  const hasCheckerAccess =
-    isAdmin ||
-    roles.includes("checker") ||
-    permissions.includes("checker-panel:read");
-  const hasDispatcherAccess =
-    isAdmin ||
-    permissions.includes("dispatcher-panel:read") ||
-    permissions.includes("dispatcher-panel:update");
 
   const tabBarHeight = useTabBarStore((s) => s.tabBarHeight);
-  const statsList = warehouseStats as unknown as any[] | undefined;
-  const isInitialLoading =
-    (statsLoading && !statsList?.length) || (!isLoaded && !user);
+  // isLoading is only true before the first data arrives.
+  const isInitialLoading = statsLoading || (!isLoaded && !user);
 
   useEffect(() => {
     // Let Home paint and navigation animations finish before showing the
@@ -91,14 +88,15 @@ export const HomeLayout: React.FC = () => {
     }
   };
 
+  const canOpenStat = (id: string) => {
+    const tab = STAT_TAB[id];
+    return !!tab && canAccessTab(tab, roles, permissions);
+  };
+
   const handleStatPress = (id: string) => {
-    if (id === "picks" && !hasPickerAccess) return;
-    if (id === "packs" && !hasCheckerAccess) return;
-    if (id === "dispatch" && !hasDispatcherAccess) return;
+    if (!canOpenStat(id)) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    if (id === "picks") navigation.navigate("picker");
-    else if (id === "packs") navigation.navigate("checker");
-    else if (id === "dispatch") navigation.navigate("dispatcher");
+    navigation.navigate(STAT_TAB[id]);
   };
 
   return (
@@ -133,6 +131,7 @@ export const HomeLayout: React.FC = () => {
               <StatsCard
                 key={stat.id}
                 {...stat}
+                disabled={!canOpenStat(stat.id)}
                 onPress={() => handleStatPress(stat.id)}
               />
             ))}

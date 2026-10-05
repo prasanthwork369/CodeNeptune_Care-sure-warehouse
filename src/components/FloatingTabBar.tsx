@@ -2,6 +2,7 @@ import { tabs } from "@/src/constants/data";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useTabBarStore } from "@/src/store/useTabBarStore";
 import { useAuthStore } from "@/src/store/useAuthStore";
+import { canAccessTab } from "@/src/utils/tabAccess";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { LayoutChangeEvent, Text, View, Platform } from "react-native";
 import * as NavigationBar from "expo-navigation-bar";
@@ -43,31 +44,9 @@ const FloatingTabBar = ({ state, navigation }: BottomTabBarProps) => {
 
   const roles = useAuthStore((s) => s.roles);
   const permissions = useAuthStore((s) => s.permissions);
-  const isAdmin = roles.includes("admin");
-
-  const isTabAccessible = useMemo(
-    () =>
-      (tabName: string): boolean => {
-        switch (tabName) {
-          case "picker":
-            return isAdmin || permissions.includes("picker-panel:read");
-          case "checker":
-            return (
-              isAdmin ||
-              roles.includes("checker") ||
-              permissions.includes("checker-panel:read")
-            );
-          case "dispatcher":
-            return (
-              isAdmin ||
-              permissions.includes("dispatcher-panel:read") ||
-              permissions.includes("dispatcher-panel:update")
-            );
-          default:
-            return true;
-        }
-      },
-    [isAdmin, permissions],
+  const isTabAccessible = useCallback(
+    (tabName: string) => canAccessTab(tabName, roles, permissions),
+    [roles, permissions],
   );
 
   useEffect(() => {

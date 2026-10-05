@@ -9,7 +9,7 @@ export const homeApi = {
     return [
       {
         id: "picks",
-        title: "Today's Checks",
+        title: "Today's Picks",
         label: "Orders",
         gradient: ["#8A84FF", "#7D79DC"],
         illustration: "picks",
@@ -21,7 +21,7 @@ export const homeApi = {
       },
       {
         id: "packs",
-        title: "Today's Packs",
+        title: "Today's Checks",
         label: "Orders",
         gradient: ["#F0948A", "#E36C61"],
         illustration: "packs",

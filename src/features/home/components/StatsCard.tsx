@@ -7,6 +7,7 @@ import { icons } from "@/src/constants/icons";
 
 interface StatsCardProps extends WarehouseStat {
   onPress?: () => void;
+  disabled?: boolean;
 }
 
 const StatsCard = ({
@@ -20,6 +21,7 @@ const StatsCard = ({
   gradient,
   illustration,
   onPress,
+  disabled = false,
 }: StatsCardProps) => {
   const illustrationSource =
     illustration === "picks"
@@ -32,8 +34,9 @@ const StatsCard = ({
     <TouchableOpacity
       activeOpacity={0.9}
       onPress={onPress}
+      disabled={disabled}
       className="mb-2 mt-4 shadow-xl shadow-black/10"
-      style={{ borderRadius: 24 }}
+      style={{ borderRadius: 24, opacity: disabled ? 0.5 : 1 }}
     >
       {badge && (
         <View className="absolute -top-9 right-4 z-10 px-5 py-1.5 flex-row items-center rounded-t-[10px] bg-brand-primary">

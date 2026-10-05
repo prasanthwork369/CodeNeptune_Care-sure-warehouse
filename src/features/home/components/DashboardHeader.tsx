@@ -8,7 +8,7 @@ export const DashboardHeader = () => {
   const router = useRouter();
   const { user } = useAuthStore();
   const displayName =
-    user?.profile?.firstName || user?.email?.split("@")[0] || "Picker";
+    user?.profile?.firstName || user?.email?.split("@")[0] || "there";
 
   return (
     <View className="flex-row items-center justify-between mb-8 mt-6">

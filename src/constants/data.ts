@@ -53,7 +53,7 @@ export const WAREHOUSE_STATS = [
   },
   {
     id: "packs",
-    title: "Today's Packs",
+    title: "Today's Checks",
     badge: null,
     value: 136,
     label: "Orders",
