@@ -5,7 +5,10 @@ import {
   ApiPickerQueueResponse,
   ListOrdersParams,
 } from '@/src/features/picker/types/order.types';
-import { FulfillmentStats } from "@/src/features/home/types/home";
+import {
+  FulfillmentStats,
+  StatsScope,
+} from "@/src/features/home/types/home";
 
 export const orderApi = {
   list: async (params?: ListOrdersParams): Promise<ApiOrder[]> => {
@@ -58,7 +61,11 @@ export const orderApi = {
     return response.data.data.items;
   },
 
-  getDashboardStats: (params?: { fromDate?: string; toDate?: string }) =>
+  getDashboardStats: (params?: {
+    scope?: StatsScope;
+    fromDate?: string;
+    toDate?: string;
+  }) =>
     apiClient.get<{ success: boolean; data: FulfillmentStats }>(
       API_ENDPOINTS.DASHBOARD_FULFILLMENT_STATS,
       { params },

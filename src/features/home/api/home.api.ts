@@ -1,9 +1,25 @@
 import { orderApi } from "@/src/features/picker/api/order.api";
-import { WarehouseStat } from "../types/home";
+import { StatsScope, WarehouseStat } from "../types/home";
+
+// The server's default period is "today" in the server's time zone; send the
+// device's local day instead so the cards match the staff member's own day.
+// Computed per request so a fetch after midnight rolls over to the new day.
+const localTodayRange = () => {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setHours(23, 59, 59, 999);
+  return { fromDate: start.toISOString(), toDate: end.toISOString() };
+};
 
 export const homeApi = {
-  getWarehouseStats: async (): Promise<WarehouseStat[]> => {
-    const response = await orderApi.getDashboardStats();
+  getWarehouseStats: async (
+    scope: StatsScope = "all",
+  ): Promise<WarehouseStat[]> => {
+    const response = await orderApi.getDashboardStats({
+      scope,
+      ...localTodayRange(),
+    });
     const stats = response.data.data;
 
     return [

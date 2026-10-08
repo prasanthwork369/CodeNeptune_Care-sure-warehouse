@@ -1,3 +1,7 @@
+// Which work the dashboard counts: every warehouse, the user's assigned
+// warehouse(s), or only the orders the user picked/packed/dispatched.
+export type StatsScope = "all" | "warehouse" | "me";
+
 export interface FulfillmentStats {
   todayPicks: {
     orders: number;

@@ -19,6 +19,8 @@ import { useHomeQuery } from "../hooks/useHome";
 // Sections
 import DashboardHeader from "../components/DashboardHeader";
 import StatsCard from "../components/StatsCard";
+import StatsScopeTabs from "../components/StatsScopeTabs";
+import { StatsScope } from "../types/home";
 import { HomeSkeletonList } from "../components/HomeSkeleton";
 import { pushNotificationService } from "@/src/services/pushNotification.service";
 import { canAccessTab, PanelTab } from "@/src/utils/tabAccess";
@@ -35,12 +37,14 @@ export const HomeLayout: React.FC = () => {
   const { user, isLoaded, roles, permissions } = useAuthStore();
 
   const [isFocused, setIsFocused] = useState(true);
+  const [scope, setScope] = useState<StatsScope>("warehouse");
   const {
     data: warehouseStats,
     isLoading: statsLoading,
+    isPlaceholderData: isSwitchingScope,
     error: statsError,
     refetch: refetchStats,
-  } = useHomeQuery({ isFocused });
+  } = useHomeQuery({ isFocused, scope });
 
   // Refresh stats each time Home gains focus. cancelRefetch: false joins a
   // fetch already in flight (e.g. the initial mount load) instead of starting
@@ -119,6 +123,8 @@ export const HomeLayout: React.FC = () => {
           <>
             <DashboardHeader />
 
+            <StatsScopeTabs value={scope} onChange={setScope} />
+
             {statsError && !warehouseStats?.length && (
               <View className="mb-4 p-4 bg-red-500/10 rounded-2xl border border-red-500/20">
                 <Text className="text-red-400 text-center font-inter-medium">
@@ -127,14 +133,17 @@ export const HomeLayout: React.FC = () => {
               </View>
             )}
 
-            {warehouseStats?.map((stat) => (
-              <StatsCard
-                key={stat.id}
-                {...stat}
-                disabled={!canOpenStat(stat.id)}
-                onPress={() => handleStatPress(stat.id)}
-              />
-            ))}
+            {/* Previous scope's numbers stay dimmed until the new scope loads. */}
+            <View style={{ opacity: isSwitchingScope ? 0.5 : 1 }}>
+              {warehouseStats?.map((stat) => (
+                <StatsCard
+                  key={stat.id}
+                  {...stat}
+                  disabled={!canOpenStat(stat.id)}
+                  onPress={() => handleStatPress(stat.id)}
+                />
+              ))}
+            </View>
           </>
         )}
       </ScrollView>
