@@ -92,10 +92,9 @@ const PartialQuantityModal: React.FC<PartialQuantityModalProps> = ({
     }
   };
 
-  const isInvalid =
-    !quantity ||
-    isNaN(parseInt(quantity)) ||
-    (!!item && parseInt(quantity) > item.requiredQty);
+  const hasValue = quantity.length > 0;
+  const isOverQty = !!item && parseInt(quantity, 10) > item.requiredQty;
+  const isInvalid = !hasValue || isNaN(parseInt(quantity, 10)) || isOverQty;
 
   return (
     <Modal
@@ -152,22 +151,23 @@ const PartialQuantityModal: React.FC<PartialQuantityModalProps> = ({
               {/* Large Input Display (Blue Bordered Box) */}
               <View
                 style={{
-                  backgroundColor:
-                    parseInt(quantity) > (item?.requiredQty || 0)
-                      ? "#FEF2F2"
-                      : colors.surface.gray,
-                  borderColor:
-                    parseInt(quantity) > (item?.requiredQty || 0)
-                      ? "#EF4444"
-                      : colors.text.blue,
+                  backgroundColor: isOverQty ? "#FEF2F2" : colors.surface.gray,
+                  borderColor: isOverQty ? "#EF4444" : colors.text.blue,
                 }}
                 className="w-full h-36 rounded-2xl border-[1.5px] items-center justify-center mb-2"
               >
                 <View className="flex-row items-center">
                   <Text
-                    className={`text-7xl font-semibold ${parseInt(quantity) > (item?.requiredQty || 0) ? "text-red-600" : "text-[#8A8A8E]"}`}
+                    style={{
+                      color: !hasValue
+                        ? "#C7C7CC"
+                        : isOverQty
+                          ? "#DC2626"
+                          : colors.text.deep,
+                    }}
+                    className={`text-7xl ${hasValue ? "font-bold" : "font-normal"}`}
                   >
-                    {quantity || "0"}
+                    {hasValue ? quantity : "0"}
                   </Text>
                   <Animated.View
                     style={[
@@ -185,9 +185,9 @@ const PartialQuantityModal: React.FC<PartialQuantityModalProps> = ({
 
               {/* Error Context */}
               <View className="h-6 mb-8 items-center">
-                {!!item && parseInt(quantity) > item.requiredQty && (
+                {isOverQty && (
                   <Text className="text-red-500 text-[14px] font-bold">
-                    Quantity cannot exceed {item.requiredQty} units
+                    Quantity cannot exceed {item?.requiredQty} units
                   </Text>
                 )}
               </View>

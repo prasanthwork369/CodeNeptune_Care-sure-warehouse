@@ -3,8 +3,8 @@ import OrderSuccessView from "@/src/components/common/OrderSuccessView";
 
 export const PackingSuccessLayout = () => (
   <OrderSuccessView
-    title="Order sent to dispatch"
-    subtitle="All items verified and packed"
+    title="Order sent to Packer"
+    subtitle="All items verified and checked "
     backLabel="Back to Checker"
     backRoute="/(tabs)/checker"
   />

@@ -78,7 +78,7 @@ const AppLoader: React.FC<AppLoaderProps> = ({
   if (!visible) return null;
 
   return (
-    <Modal transparent visible={visible} animationType="fade">
+    <Modal transparent visible={visible} animationType="fade" statusBarTranslucent>
       <View className="flex-1 bg-white items-center justify-center px-8">
         <View className="mb-8">
           <Logo width={80} height={80} />

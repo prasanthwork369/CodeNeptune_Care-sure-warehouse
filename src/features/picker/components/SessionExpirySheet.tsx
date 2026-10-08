@@ -103,6 +103,7 @@ const SessionExpirySheet: React.FC<SessionExpirySheetProps> = ({
       visible={shouldRender}
       animationType="none"
       onRequestClose={onClose}
+      statusBarTranslucent
     >
       <View style={{ flex: 1, justifyContent: "flex-start" }}>
         {/* Backdrop */}

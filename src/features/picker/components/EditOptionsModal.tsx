@@ -28,6 +28,7 @@ const EditOptionsModal: React.FC<EditOptionsModalProps> = ({
       visible={isVisible}
       animationType="fade"
       onRequestClose={onClose}
+      statusBarTranslucent
     >
       <Pressable
         style={StyleSheet.absoluteFill}

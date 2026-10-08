@@ -116,6 +116,7 @@ const ConfirmMoveBottomSheet: React.FC<ConfirmMoveBottomSheetProps> = ({
       visible={shouldRender}
       animationType="none"
       onRequestClose={onClose}
+      statusBarTranslucent
     >
       <GestureHandlerRootView style={{ flex: 1 }}>
         <View className="flex-1 justify-end">
