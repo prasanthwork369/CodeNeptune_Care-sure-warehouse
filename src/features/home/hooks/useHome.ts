@@ -13,7 +13,7 @@ import { StatsScope, WarehouseStat } from "../types/home";
 // newly selected scope loads (isPlaceholderData is true until it arrives).
 export const useHomeQuery = ({
   isFocused = true,
-  scope = "warehouse",
+  scope = "me",
 }: { isFocused?: boolean; scope?: StatsScope } = {}) => {
   return useQuery<WarehouseStat[], Error>({
     queryKey: ["home-stats", scope],

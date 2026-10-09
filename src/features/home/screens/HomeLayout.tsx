@@ -37,7 +37,7 @@ export const HomeLayout: React.FC = () => {
   const { user, isLoaded, roles, permissions } = useAuthStore();
 
   const [isFocused, setIsFocused] = useState(true);
-  const [scope, setScope] = useState<StatsScope>("warehouse");
+  const [scope, setScope] = useState<StatsScope>("me");
   const {
     data: warehouseStats,
     isLoading: statsLoading,

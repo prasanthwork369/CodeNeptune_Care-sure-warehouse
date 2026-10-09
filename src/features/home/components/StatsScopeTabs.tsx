@@ -4,8 +4,8 @@ import * as Haptics from "expo-haptics";
 import { StatsScope } from "../types/home";
 
 const SCOPES: { value: StatsScope; label: string }[] = [
-  { value: "warehouse", label: "My Warehouse" },
   { value: "me", label: "My Stats" },
+  { value: "warehouse", label: "My Warehouse" },
 ];
 
 interface StatsScopeTabsProps {
