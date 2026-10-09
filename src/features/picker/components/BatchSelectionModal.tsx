@@ -12,6 +12,8 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/src/theme/colors";
 import { OrderItem, BatchRow } from "@/src/features/picker/types/order.types";
+import { validateBatches } from "@/src/features/picker/services/batch.validation";
+import InputError from "@/src/components/common/InputError";
 
 interface BatchSelectionModalProps {
   isVisible: boolean;
@@ -67,9 +69,10 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
     );
   };
 
-  const canSave = batches.every(
-    (b) => b.batchNo.trim().length > 0 && parseInt(b.quantity || "0", 10) > 0,
-  );
+  const orderedQty = item?.requiredQty ?? 0;
+  const validation = validateBatches(batches, orderedQty);
+  const canSave = validation.isValid;
+  const exceedsOrdered = validation.error === "EXCEEDS_ORDERED";
 
   const handleSave = () => {
     if (!canSave) return;
@@ -263,6 +266,11 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
               </View>
             ))}
           </ScrollView>
+
+          <InputError
+            visible={exceedsOrdered}
+            message={`Total quantity (${validation.total}) cannot exceed ordered units (${orderedQty})`}
+          />
 
           {/* Add Batch */}
           <TouchableOpacity

@@ -13,6 +13,11 @@ import { Order, OrderItem, BatchRow } from '@/src/features/picker/types/order.ty
 import { orderService } from '@/src/features/picker/services/order.service';
 import { useFulfillmentActions } from '@/src/features/picker/hooks/useFulfillment';
 import { fulfillmentApi } from '@/src/features/picker/api/fulfillment.api';
+import {
+  validateBatches,
+  getBatchTotal,
+  findOverPickedItems,
+} from '@/src/features/picker/services/batch.validation';
 import { useQueryClient } from "@tanstack/react-query";
 import { refreshQueries } from "@/src/lib/refreshQueries";
 import { ExtendMinutes } from '@/src/features/picker/types/fulfillment.types';
@@ -240,12 +245,11 @@ export const OrderPickingLayout: React.FC<OrderPickingLayoutProps> = ({
 
   const handleBatchSave = (batches: BatchRow[]) => {
     const target = activeItemRef.current;
+    // Never store an allocation whose combined quantity exceeds the order
+    if (target && !validateBatches(batches, target.requiredQty).isValid) return;
     if (target) {
       setItemBatches((prev) => ({ ...prev, [target.id]: batches }));
-      const totalPicked = batches.reduce(
-        (sum, b) => sum + (parseInt(b.quantity) || 0),
-        0,
-      );
+      const totalPicked = getBatchTotal(batches);
       setPickingItems((prev) =>
         prev.map((i) => {
           if (i.id === target.id) {
@@ -295,6 +299,8 @@ export const OrderPickingLayout: React.FC<OrderPickingLayoutProps> = ({
 
   const handleConfirmMove = async () => {
     if (isMoving) return;
+    // Block over-picked quantities from reaching the pick API
+    if (findOverPickedItems(pickingItems).length > 0) return;
     setIsMoving(true);
     try {
       if (isAnyPartial) {
