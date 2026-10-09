@@ -18,11 +18,13 @@ export const LoginAction: React.FC<LoginActionProps> = ({
         style={{ backgroundColor: "#117B3E" }}
         className={`py-4 rounded-full items-center shadow-md active:opacity-90 ${isLoading ? "opacity-80" : ""}`}
       >
-        {isLoading ? (
-          <ActivityIndicator color="white" />
-        ) : (
-          <Text className="text-white font-bold text-lg">Login</Text>
-        )}
+        <View className="h-7 items-center justify-center">
+          {isLoading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text className="text-white font-bold text-lg">Login</Text>
+          )}
+        </View>
       </TouchableOpacity>
     </View>
   );
