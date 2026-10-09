@@ -10,6 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { Order } from "@/src/features/picker/types/order.types";
+import { getDeliveryDateLabel } from "@/src/features/picker/services/order.mapper";
 
 interface OrderInfoPopupProps {
   isVisible: boolean;
@@ -121,7 +122,7 @@ const OrderInfoPopup: React.FC<OrderInfoPopupProps> = ({
         <DetailRow
           icon={CalendarClock}
           label="Delivery Date"
-          value="Oct 14, 2023"
+          value={getDeliveryDateLabel(order)}
         />
       </Animated.View>
     </View>

@@ -11,6 +11,13 @@ import {
 } from "../../../utils/dateUtils";
 import { ORDER_STATUS } from "../constants/order.constants";
 
+/**
+ * Delivery date shown in the order info popup. The order API does not return
+ * a delivery date yet, so this falls back to "N/A" rather than a made-up value.
+ */
+export const getDeliveryDateLabel = (order: Order | null | undefined): string =>
+  order?.deliveryDate || "N/A";
+
 export const mapOrder = (apiOrder: ApiOrder): Order => {
   const medicineNames =
     apiOrder.items?.map((it) => it.medicineSnapshot.name) || [];
