@@ -47,6 +47,32 @@ export interface Order {
   // Field for full picking list
   pickingItems?: OrderItem[];
   pickedBy?: string;
+  pickedAt?: string;
+  pickedReason?: string;
+  pickedByRole?: string;
+  pickedEvent?: PickedStatusEvent;
+  statusLogs?: ApiStatusLog[];
+}
+
+export interface PickedStatusEvent {
+  createdAt: string;
+  reason?: string;
+  performedByFirstName?: string;
+  performedByLastName?: string;
+  performedByRole?: string;
+}
+
+export interface ApiStatusLog {
+  id?: string;
+  orderId?: string;
+  fromStatus?: number | string;
+  toStatus: number | string;
+  reason?: string;
+  createdAt: string;
+  performedById?: string;
+  performedByFirstName?: string;
+  performedByLastName?: string;
+  performedByRole?: string;
 }
 
 export interface ApiOrderItem {
@@ -91,6 +117,7 @@ export interface ApiOrder {
     phone: string;
   };
   items: ApiOrderItem[];
+  statusLogs?: ApiStatusLog[];
 }
 
 export interface ApiPickerQueueResponse {

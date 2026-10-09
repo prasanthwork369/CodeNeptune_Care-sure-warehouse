@@ -107,7 +107,7 @@ const CompletedOrderCard: React.FC<CompletedOrderCardProps> = ({ order }) => {
           </View>
 
           {/* Completion Date */}
-          <View className="flex-row items-center">
+          {/* <View className="flex-row items-center">
             <CheckCircle
               width={15}
               height={15}
@@ -128,7 +128,7 @@ const CompletedOrderCard: React.FC<CompletedOrderCardProps> = ({ order }) => {
                 {order.completionDate || "N/A"}
               </Text>
             </View>
-          </View>
+          </View> */}
         </View>
 
         {/* Right: product images */}
