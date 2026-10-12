@@ -94,7 +94,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     // 1. Core Auth & Storage Init
-    useAuthStore.getState().initialize();
+    const sessionRestored = useAuthStore.getState().initialize();
 
     // 2. Unauthorized handler — logs out when refresh token expires
     setUnauthorizedHandler(() => {
@@ -104,7 +104,8 @@ export default function RootLayout() {
     });
 
     // 2. Initialize network listener
-    const unsubscribeNet = initNetworkListener(axiosInstance);
+    // (offline queue replay waits for the session restore)
+    const unsubscribeNet = initNetworkListener(axiosInstance, sessionRestored);
 
     // 3. Handle an initial notification response without requesting permission.
     // Push permission is requested after the authenticated Home screen renders.
