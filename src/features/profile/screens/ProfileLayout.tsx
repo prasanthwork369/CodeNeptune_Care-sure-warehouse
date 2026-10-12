@@ -22,8 +22,11 @@ import { ProfileSkeleton } from "../components/ProfileSkeleton";
 import { LogoutConfirmModal } from "../components/LogoutConfirmModal";
 import AppLoader from "@/src/components/common/AppLoader";
 import BackButton from "@/src/components/common/BackButton";
+import { useQueryClient } from "@tanstack/react-query";
+import { clearSessionCache } from "@/src/lib/sessionCache";
 
 export const ProfileLayout = () => {
+  const queryClient = useQueryClient();
   const {
     data: user,
     isLoading: profileLoading,
@@ -99,6 +102,10 @@ export const ProfileLayout = () => {
     } catch (error) {
       if (__DEV__) console.error("Logout failed:", error);
       setIsLoggingOut(false);
+    } finally {
+      // authService.logout always ends the local session, even if the API
+      // call fails, so this user's cached data must go either way
+      clearSessionCache(queryClient);
     }
   };
 

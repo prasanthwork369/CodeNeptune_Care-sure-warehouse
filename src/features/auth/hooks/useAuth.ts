@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authService } from "../services/auth.service";
+import { clearSessionCache } from "@/src/lib/sessionCache";
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
@@ -11,7 +12,8 @@ export const useAuth = () => {
 
   const logoutMutation = useMutation({
     mutationFn: authService.logout,
-    onSuccess: () => queryClient.clear(),
+    // Settled, not success: the local session ends even if the API call fails
+    onSettled: () => clearSessionCache(queryClient),
   });
 
   return {
