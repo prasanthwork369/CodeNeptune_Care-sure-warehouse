@@ -25,11 +25,11 @@ export const useOrderStore = create<OrderState>((set) => ({
   setLoading: (ordersLoading) => set({ ordersLoading }),
   setError: (ordersError) => set({ ordersError }),
   setActiveTab: (activeTab) => set({ activeTab }),
+  // Drops the user's order data on logout; activeTab is UI state, not user data
   clearOrders: () =>
     set({
       orders: [],
       ordersError: null,
-      activeTab: "new",
       ordersLoading: false,
     }),
 }));

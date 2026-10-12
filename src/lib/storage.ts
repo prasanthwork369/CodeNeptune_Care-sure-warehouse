@@ -2,6 +2,8 @@ import * as SecureStore from "expo-secure-store";
 
 const ACCESS_TOKEN_KEY = "access_token";
 const EXPIRES_AT_KEY = "token_expires_at";
+// Identifies one login; survives token refresh and app restart, not logout
+const SESSION_ID_KEY = "session_id";
 
 export const storage = {
   saveToken: async (accessToken: string) => {
@@ -27,6 +29,28 @@ export const storage = {
       await SecureStore.deleteItemAsync(EXPIRES_AT_KEY);
     } catch (error) {
       console.error("Error clearing token:", error);
+    }
+    try {
+      await SecureStore.deleteItemAsync(SESSION_ID_KEY);
+    } catch (error) {
+      console.error("Error clearing session id:", error);
+    }
+  },
+
+  setSessionId: async (sessionId: string) => {
+    try {
+      await SecureStore.setItemAsync(SESSION_ID_KEY, sessionId);
+    } catch (error) {
+      console.error("Error saving session id:", error);
+    }
+  },
+
+  getSessionId: async () => {
+    try {
+      return await SecureStore.getItemAsync(SESSION_ID_KEY);
+    } catch (error) {
+      console.error("Error getting session id:", error);
+      return null;
     }
   },
 

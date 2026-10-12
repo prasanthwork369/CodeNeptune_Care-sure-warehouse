@@ -1,5 +1,6 @@
 import { authApi } from "../api/auth.api";
 import { useAuthStore } from "@/src/store/useAuthStore";
+import { runLogout } from "./logoutFlow";
 
 export const authService = {
   login: async (email: string, password: string) => {
@@ -20,11 +21,7 @@ export const authService = {
     return response;
   },
 
-  logout: async () => {
-    try {
-      await authApi.logout();
-    } finally {
-      await useAuthStore.getState().logout();
-    }
-  },
+  // useAuthStore.logout also clears the offline request queue
+  logout: () =>
+    runLogout(authApi.logout, () => useAuthStore.getState().logout()),
 };
