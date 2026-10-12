@@ -12,6 +12,7 @@ import { toAppError } from "@/src/api/errors";
 import { useNotificationStore } from "@/src/store/useNotificationStore";
 import { useAuthStore } from "@/src/store/useAuthStore";
 import { useSocket } from "@/src/hooks/useSocket";
+import { releaseTracker } from '@/src/features/picker/services/lockRelease';
 
 // Orders claimed during this JS session — never auto-released by the startup cleanup.
 // Module-level so it resets on a full app reload, which is exactly the case we clean up after.
@@ -51,13 +52,23 @@ export function useReleaseStaleLocks() {
 }
 
 /**
+ * Active locks, minus locks whose release may not have reached the server
+ * when this request started (see releaseTracker).
+ */
+export async function fetchActiveLocks() {
+  const requestedAt = Date.now();
+  const locks = await fulfillmentApi.getActiveLocks();
+  return releaseTracker.filter(locks, requestedAt);
+}
+
+/**
  * Fetches and tracks all active picker locks.
  * Polls every 30s as a fallback when sockets are unavailable.
  */
 export function useActiveLocks() {
   return useQuery({
     queryKey: ["active-locks"],
-    queryFn: () => fulfillmentApi.getActiveLocks(),
+    queryFn: fetchActiveLocks,
     refetchInterval: 30000,
   });
 }
@@ -153,6 +164,7 @@ export function useFulfillmentActions(orderId?: string) {
   const { mutateAsync: claimMutation, isPending: isClaiming } = useMutation({
     mutationFn: (id: string) => {
       sessionClaims.add(id); // guard against the startup cleanup releasing a live claim
+      releaseTracker.clear(id); // a fresh claim's lock must not be filtered out
       return fulfillmentApi.claim(id);
     },
     onSuccess: () => {
@@ -171,6 +183,8 @@ export function useFulfillmentActions(orderId?: string) {
   const { mutateAsync: releaseMutation, isPending: isReleasing } = useMutation({
     mutationFn: (id: string) => fulfillmentApi.release(id),
     onMutate: async (id: string) => {
+      // Locks refetched before the release lands must not re-hide the order
+      releaseTracker.start(id);
       // Optimistically drop the lock so the order reappears in the queue
       // immediately on back-navigation instead of waiting for the next poll
       await queryClient.cancelQueries({ queryKey: ["active-locks"] });
@@ -178,10 +192,14 @@ export function useFulfillmentActions(orderId?: string) {
         old?.filter((l) => l.orderId !== id),
       );
     },
-    onSuccess: () => {
+    onSuccess: (_data, id) => {
+      releaseTracker.succeed(id);
       invalidate();
     },
-    onError: (error) => {
+    onError: (error, id) => {
+      // Lock still held: stop filtering it and restore the real lock list
+      releaseTracker.clear(id);
+      refreshQueries(queryClient, ["active-locks"]);
       addNotification({
         title: "Unable to release",
         message: toAppError(error).message,

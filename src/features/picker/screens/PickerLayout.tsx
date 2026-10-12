@@ -37,7 +37,7 @@ import { useOrderStore } from '@/src/features/picker/store/useOrderStore';
 import { useOrdersQuery } from '@/src/features/picker/hooks/useOrders';
 import { usePickerScroll } from '@/src/features/picker/hooks/usePickerScroll';
 import { useQuery } from "@tanstack/react-query";
-import { fulfillmentApi } from '@/src/features/picker/api/fulfillment.api';
+import { fetchActiveLocks } from '@/src/features/picker/hooks/useFulfillment';
 import { orderApi } from '@/src/features/picker/api/order.api';
 import { mapOrder } from '@/src/features/picker/services/order.service';
 
@@ -97,7 +97,7 @@ export const PickerLayout = () => {
   // invalidated meanwhile are refetched when Picker regains focus.
   const { data: activeLocks = [], refetch: refetchLocks } = useQuery({
     queryKey: ["active-locks"],
-    queryFn: fulfillmentApi.getActiveLocks,
+    queryFn: fetchActiveLocks,
     enabled: isFocused,
   });
   const lockedOrderIds = useMemo(
