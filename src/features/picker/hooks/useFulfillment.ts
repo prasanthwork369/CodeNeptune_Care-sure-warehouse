@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import {
-  QueryClient,
   useQuery,
   useMutation,
   useQueryClient,
@@ -13,6 +12,10 @@ import { useNotificationStore } from "@/src/store/useNotificationStore";
 import { useAuthStore } from "@/src/store/useAuthStore";
 import { useSocket } from "@/src/hooks/useSocket";
 import { releaseTracker } from '@/src/features/picker/services/lockRelease';
+import {
+  refreshSyncedQueries,
+  subscribeFulfillmentEvents,
+} from '@/src/features/picker/services/fulfillmentSync';
 
 // Orders claimed during this JS session — never auto-released by the startup cleanup.
 // Module-level so it resets on a full app reload, which is exactly the case we clean up after.
@@ -73,20 +76,6 @@ export function useActiveLocks() {
   });
 }
 
-// Queries kept fresh by socket events (and resynced after a reconnect)
-const SYNCED_QUERY_KEYS = [
-  "active-locks",
-  "orders",
-  "picker-picked",
-  "dispatched-orders",
-  "checker-packed",
-  "dispatcher-order",
-  "home-stats",
-];
-
-const refreshSyncedQueries = (queryClient: QueryClient) =>
-  SYNCED_QUERY_KEYS.forEach((key) => refreshQueries(queryClient, [key]));
-
 /**
  * Synchronizes fulfillment state via WebSockets.
  * Listens for order lock events and invalidates relevant queries.
@@ -108,41 +97,9 @@ export function useSyncFulfillment() {
 
     // refreshQueries: a burst of events (or an event racing our own mutation's
     // refresh) never runs overlapping requests for the same query
-    const invalidateAll = () => refreshSyncedQueries(queryClient);
-
-    // Listen for all plausible server event names — covers new orders + updates
-    const events = [
-      // New order created (customer places order)
-      "order_created",
-      "order:created",
-      "orderCreated",
-      "new_order",
-      "newOrder",
-      // Order updates
-      "order_update",
-      "order_updated",
-      "orderUpdate",
-      "orders_updated",
-      "order:update",
-      "order:updated",
-      // Lock events
-      "lock_update",
-      "lock_updated",
-    ];
-
-    const cleanups = events
-      .map((e) => on(e, invalidateAll))
-      .filter(Boolean) as (() => void)[];
-
-    const cleanupNotification = on("notification", (data: any) => {
-      if (data?.type?.startsWith("orders.") || data?.type?.startsWith("order"))
-        invalidateAll();
-    });
-
-    return () => {
-      cleanups.forEach((c) => c());
-      if (cleanupNotification) cleanupNotification();
-    };
+    return subscribeFulfillmentEvents(on, () =>
+      refreshSyncedQueries(queryClient),
+    );
   }, [on, isConnected, queryClient]);
 }
 
