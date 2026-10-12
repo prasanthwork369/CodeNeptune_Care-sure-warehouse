@@ -87,8 +87,18 @@ apiClient.interceptors.response.use(
     const isAuthPath =
       original?.url?.includes("auth/refresh") ||
       original?.url?.includes("auth/logout");
+    // The queue persists configs as JSON, which drops a FormData body's file,
+    // so uploads fail now (caller shows its error) instead of replaying empty
+    const isMultipart =
+      typeof FormData !== "undefined" && original?.data instanceof FormData;
 
-    if (isNetworkError && isMutation && !isAuthPath && !original?._queued) {
+    if (
+      isNetworkError &&
+      isMutation &&
+      !isAuthPath &&
+      !isMultipart &&
+      !original?._queued
+    ) {
       return new Promise((resolve, reject) => {
         requestQueue.add({ ...original, _queued: true }, resolve, reject);
       });
