@@ -27,25 +27,16 @@ export const authApi = {
     return response.data;
   },
   uploadAvatar: async (formData: FormData) => {
-    try {
-      const response = await apiClient.post(
-        API_ENDPOINTS.AUTH_UPDATE_PROFILE,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+    // Errors propagate as AppError (via apiClient), like the methods above
+    const response = await apiClient.post(
+      API_ENDPOINTS.AUTH_UPDATE_PROFILE,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
-      );
-      return response.data;
-    } catch (error) {
-      // Simulation Mode (Temp)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      return {
-        success: true,
-        message: "Upload simulated successfully",
-        data: { avatarUrl: null },
-      };
-    }
+      },
+    );
+    return response.data;
   },
 };
