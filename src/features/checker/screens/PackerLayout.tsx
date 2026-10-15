@@ -14,6 +14,7 @@ import { orderApi } from "@/src/features/picker/api/order.api";
 import { mapOrder } from "@/src/features/picker/services/order.service";
 import { useTabBarStore } from "@/src/store/useTabBarStore";
 import { Order } from "@/src/features/picker/types/order.types";
+import { isSameLocalDay } from "@/src/utils/dateUtils";
 
 // Sections
 import PackedOrderCard from "../components/PackedOrderCard";
@@ -34,15 +35,9 @@ export const PackerLayout = () => {
       const today = new Date();
       const raw = await orderApi.listPacked();
       return raw
-        .filter((o) => {
-          const d = new Date(o.createdAt);
-          return (
-            !isNaN(d.getTime()) &&
-            d.getDate() === today.getDate() &&
-            d.getMonth() === today.getMonth() &&
-            d.getFullYear() === today.getFullYear()
-          );
-        })
+        .filter((o) =>
+          o.updatedAt ? isSameLocalDay(o.updatedAt, today) : false,
+        )
         .map(mapOrder);
     },
     staleTime: 0,

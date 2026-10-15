@@ -12,6 +12,7 @@ import { colors } from "@/src/theme/colors";
 import BackButton from "@/src/components/common/BackButton";
 import CompletedOrderItemCard from "../components/CompletedOrderItemCard";
 import { ItemPickingSkeletonList } from "../components/ItemPickingSkeleton";
+import { formatOrderDate } from "@/src/utils/dateUtils";
 
 export interface CompletedOrderLayoutProps {
   orderId: string;
@@ -259,7 +260,9 @@ export const CompletedOrderLayout: React.FC<CompletedOrderLayoutProps> = ({ orde
                     }}
                     numberOfLines={1}
                   >
-                    {order?.completionDate || "—"}
+                    {order?.updatedAt
+                      ? formatOrderDate(order.updatedAt)
+                      : "N/A"}
                   </Text>
                 </View>
               </View>

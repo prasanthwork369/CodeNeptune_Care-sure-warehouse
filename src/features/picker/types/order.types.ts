@@ -32,9 +32,11 @@ export interface Order {
   extraItems?: number;
   timeAgo?: string;
   status: OrderStatus;
+  rawStatus?: number;
   images?: string[];
   // Fields for partial orders
   date?: string;
+  updatedAt?: string;
   outOfStockMeds?: string[];
   pickedCount?: number;
   totalCount?: number;

@@ -16,6 +16,7 @@ import ErrorModal from "@/src/components/common/ErrorModal";
 import BackButton from "@/src/components/common/BackButton";
 import ItemEditModal from "../components/ItemEditModal";
 import GetInvoiceModal from "@/src/components/common/GetInvoiceModal";
+import { isOrderAlreadyChecked } from "../utils/checkerStatus";
 
 export interface OrderSummaryLayoutProps {
   orderId: string;
@@ -89,6 +90,30 @@ export const OrderSummaryLayout: React.FC<OrderSummaryLayoutProps> = ({ orderId 
           onPress={() => router.replace("/scanner" as any)}
         >
           <Text className="text-white font-inter-bold">Scan Again</Text>
+        </TouchableOpacity>
+      </View>
+    );
+
+  if (isOrderAlreadyChecked(order))
+    return (
+      <View className="flex-1 bg-white items-center justify-center p-10">
+        <Text
+          className="text-[18px] font-inter-bold mb-2"
+          style={{ color: colors.text.DEFAULT }}
+        >
+          Order Already Checked
+        </Text>
+        <Text
+          className="text-[14px] font-inter text-center mb-8"
+          style={{ color: colors.text.secondary }}
+        >
+          This order has already been checked successfully. Please scan another order.
+        </Text>
+        <TouchableOpacity
+          className="bg-[#0F7635] px-8 py-3 rounded-full"
+          onPress={() => router.replace("/scanner" as any)}
+        >
+          <Text className="text-white font-inter-bold">Scan Another Order</Text>
         </TouchableOpacity>
       </View>
     );
@@ -562,7 +587,7 @@ export const OrderSummaryLayout: React.FC<OrderSummaryLayoutProps> = ({ orderId 
             });
             refreshQueries(queryClient, ["checker-packed"]);
             refreshQueries(queryClient, ["dispatched-orders"]);
-            router.push({
+            router.replace({
               pathname: "/packing/success",
               params: { orderId: order.orderId || order.id, totalItems },
             } as any);

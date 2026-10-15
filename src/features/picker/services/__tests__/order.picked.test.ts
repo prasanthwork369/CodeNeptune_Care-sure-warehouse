@@ -248,4 +248,13 @@ test("5. PICKED remains visible even when the latest status is CHECKED (status 5
 
   // Status 5 is CHECKED, not PACKED
   assert.notEqual(order.status, "completed");
+  assert.equal(order.rawStatus, 5);
+});
+
+test("mapOrder preserves updatedAt for the completion details screen", () => {
+  const updatedAt = "2026-10-08T05:00:00.000Z";
+
+  const order = mapOrder({ ...baseApiOrder, updatedAt });
+
+  assert.equal(order.updatedAt, updatedAt);
 });

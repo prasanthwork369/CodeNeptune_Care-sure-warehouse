@@ -117,12 +117,15 @@ export const mapOrder = (apiOrder: ApiOrder): Order => {
             apiOrder.status === ORDER_STATUS.PARTIALLY_PICKED
           ? "partial"
           : "new",
+    rawStatus:
+      apiOrder.status !== undefined ? Number(apiOrder.status) : undefined,
     totalItems:
       apiOrder.items?.reduce((sum, item) => sum + item.quantity, 0) || 0,
     items: medicineNames,
     images: orderImages.slice(0, 4),
     pickingItems,
     date: apiOrder.createdAt,
+    updatedAt: apiOrder.updatedAt,
     completionDate,
     outOfStockMeds,
     pickedCount,

@@ -48,3 +48,17 @@ export const formatOrderDate = (dateInput: string | Date | number): string => {
     hour12: true,
   });
 };
+
+export const isSameLocalDay = (
+  dateInput: string | Date | number,
+  comparisonDate: Date,
+): boolean => {
+  const date = new Date(dateInput);
+  if (isNaN(date.getTime()) || isNaN(comparisonDate.getTime())) return false;
+
+  return (
+    date.getDate() === comparisonDate.getDate() &&
+    date.getMonth() === comparisonDate.getMonth() &&
+    date.getFullYear() === comparisonDate.getFullYear()
+  );
+};
