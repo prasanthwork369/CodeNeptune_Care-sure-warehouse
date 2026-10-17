@@ -13,6 +13,11 @@ import { dispatcherApi } from "@/src/features/dispatcher/api/dispatcher.api";
 import { mapOrder } from "@/src/features/picker/services/order.service";
 import { useTabBarStore } from "@/src/store/useTabBarStore";
 import { colors } from "@/src/theme/colors";
+import {
+  isDispatchEventOn,
+  isDispatchedOrder,
+  isDispatchFailedOrder,
+} from "../utils/dispatcherFilters";
 
 // Sections
 import DispatcherTabs from '../components/DispatcherTabs';
@@ -37,22 +42,12 @@ export const DispatcherLayout = () => {
     staleTime: 0,
   });
 
-  const isToday = (dateInput: string) => {
-    const d = new Date(dateInput);
-    if (isNaN(d.getTime())) return false;
-    const today = new Date();
-    return (
-      d.getDate() === today.getDate() &&
-      d.getMonth() === today.getMonth() &&
-      d.getFullYear() === today.getFullYear()
-    );
-  };
-
+  const today = new Date();
   const dispatchedOrders = allRawOrders
-    .filter((o) => [6, 7].includes(Number(o.status)) && isToday(o.createdAt))
+    .filter((o) => isDispatchedOrder(o) && isDispatchEventOn(o, today))
     .map(mapOrder);
   const pendingOrders = allRawOrders
-    .filter((o) => Number(o.status) === 12 && isToday(o.createdAt))
+    .filter((o) => isDispatchFailedOrder(o) && isDispatchEventOn(o, today))
     .map(mapOrder);
 
   return (
