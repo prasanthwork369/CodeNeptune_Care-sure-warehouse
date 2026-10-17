@@ -60,7 +60,6 @@ const loader = Module as unknown as {
 };
 const originalLoad = loader._load;
 loader._load = function (request: string, ...rest: unknown[]) {
-  if (request.endsWith(".mp3")) return 1; // Metro asset id
   return request in nativeStubs
     ? nativeStubs[request]
     : originalLoad.call(this, request, ...rest);

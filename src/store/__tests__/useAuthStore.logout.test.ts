@@ -12,7 +12,6 @@ let asyncStorageReadGate: Promise<void> | null = null;
 // When true, writing notification history to AsyncStorage fails
 let notificationWritesFail = false;
 const nativeStubs: Record<string, unknown> = {
-  // Background: notification sounds are skipped (audio.ts)
   "react-native": {
     Platform: { OS: "android" },
     AppState: { currentState: "background" },
@@ -53,7 +52,6 @@ const loader = Module as unknown as {
 };
 const originalLoad = loader._load;
 loader._load = function (request: string, ...rest: unknown[]) {
-  if (request.endsWith(".mp3")) return 1; // Metro asset id
   return request in nativeStubs
     ? nativeStubs[request]
     : originalLoad.call(this, request, ...rest);

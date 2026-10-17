@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { playSound } from "../utils/audio";
 
 export type NotificationType =
   | "info"
@@ -78,11 +77,6 @@ export const useNotificationStore = create<NotificationState>()(
             timestamp,
             type: params.type || "info",
           };
-
-          // Play sound with priority logic (handled in audio utils)
-          playSound(newNotification.type).catch((e) => {
-            if (__DEV__) console.warn("Sound play skipped", e);
-          });
 
           set((state) => {
             // 1. Update History (Limit to last 20)
