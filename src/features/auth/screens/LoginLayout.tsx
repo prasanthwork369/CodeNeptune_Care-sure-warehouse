@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  type ScrollViewInstance,
   Keyboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,7 +22,7 @@ import { LoginAction } from "../components/LoginAction";
 
 export const LoginLayout: React.FC = () => {
   const router = useRouter();
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<ScrollViewInstance>(null);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

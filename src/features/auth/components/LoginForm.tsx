@@ -1,5 +1,11 @@
 import React, { useRef } from "react";
-import { View, TextInput, TouchableOpacity, Pressable } from "react-native";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Pressable,
+  type TextInputInstance,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import InputError from "@/src/components/common/InputError";
 
@@ -26,8 +32,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   onFocus,
   onInputChange,
 }) => {
-  const emailRef = useRef<TextInput>(null);
-  const passwordRef = useRef<TextInput>(null);
+  const emailRef = useRef<TextInputInstance>(null);
+  const passwordRef = useRef<TextInputInstance>(null);
 
   return (
     <View>
