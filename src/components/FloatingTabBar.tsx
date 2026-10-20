@@ -1,11 +1,11 @@
 import { tabs } from "@/src/constants/data";
-import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import type { BottomTabBarProps } from "expo-router/tabs";
 import { useTabBarStore } from "@/src/store/useTabBarStore";
 import { useAuthStore } from "@/src/store/useAuthStore";
 import { canAccessTab } from "@/src/utils/tabAccess";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { LayoutChangeEvent, Text, View, Platform } from "react-native";
-import * as NavigationBar from "expo-navigation-bar";
+import { NavigationBar } from "expo-navigation-bar";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, {
   interpolate,
@@ -37,7 +37,7 @@ const TRAIL_SPRING = { damping: 22, stiffness: 320, mass: 0.6 } as const;
 
 const AnimatedText = Animated.createAnimatedComponent(Text);
 
-const FloatingTabBar = ({ state, navigation }: BottomTabBarProps) => {
+const FloatingTabBar = ({ state, navigateToTab: goToRoute }: BottomTabBarProps) => {
   const insets = useSafeAreaInsets();
   const [barHeight, setBarHeight] = useState(0);
   const setTabBarHeight = useTabBarStore((s) => s.setTabBarHeight);
@@ -51,7 +51,8 @@ const FloatingTabBar = ({ state, navigation }: BottomTabBarProps) => {
 
   useEffect(() => {
     if (Platform.OS === "android") {
-      NavigationBar.setButtonStyleAsync("dark").catch(() => {});
+      // "light" = light bar with dark buttons (old setButtonStyleAsync("dark")).
+      NavigationBar.setStyle("light");
     }
   }, []);
 
@@ -99,9 +100,9 @@ const FloatingTabBar = ({ state, navigation }: BottomTabBarProps) => {
         return;
       }
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      navigation.navigate(route.name);
+      goToRoute(route.key);
     },
-    [state.routes, state.index, isTabAccessible, navigation],
+    [state.routes, state.index, isTabAccessible, goToRoute],
   );
 
   const panGesture = useMemo(
