@@ -117,7 +117,12 @@ export const PackerLayout = () => {
               windowSize={5}
               removeClippedSubviews
               refreshControl={
-                <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
+                <RefreshControl
+                  refreshing={isRefetching}
+                  onRefresh={() => {
+                    refetch();
+                  }}
+                />
               }
               ListEmptyComponent={
                 isLoading ? (

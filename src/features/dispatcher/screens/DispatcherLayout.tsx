@@ -85,7 +85,9 @@ export const DispatcherLayout = () => {
           refreshControl={
             <RefreshControl
               refreshing={isRefetching}
-              onRefresh={() => refetch()}
+              onRefresh={() => {
+                refetch();
+              }}
             />
           }
         >

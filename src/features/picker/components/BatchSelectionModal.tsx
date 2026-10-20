@@ -11,11 +11,13 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "@/src/theme/colors";
 import { OrderItem, BatchRow } from "@/src/features/picker/types/order.types";
 import { validateBatches } from "@/src/features/picker/services/batch.validation";
 import {
   applyBatchSelection,
+  applyQuantityChange,
   isSystemAssignedRow,
 } from "@/src/features/picker/services/batch.selection";
 import {
@@ -24,6 +26,15 @@ import {
 } from "@/src/features/picker/api/inventory.api";
 import { formatExpiryDate } from "@/src/utils/dateUtils";
 import InputError from "@/src/components/common/InputError";
+
+// Shared column sizes so the header, every batch row and the dropdown list
+// line up whether or not a row shows the remove button
+const ROW_HEIGHT = 54;
+const QTY_WIDTH = 76;
+const COLUMN_GAP = 10;
+const REMOVE_SLOT_WIDTH = 30;
+const TRAILING_WIDTH =
+  COLUMN_GAP + QTY_WIDTH + COLUMN_GAP + REMOVE_SLOT_WIDTH;
 
 interface BatchSelectionModalProps {
   isVisible: boolean;
@@ -40,6 +51,7 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
   onClose,
   onSave,
 }) => {
+  const insets = useSafeAreaInsets();
   const [batches, setBatches] = useState<BatchRow[]>([
     { id: "1", batchNo: "", quantity: "" },
   ]);
@@ -92,18 +104,17 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
     );
   };
 
-  const updateBatch = (id: string, field: keyof BatchRow, value: string) => {
-    setBatches((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, [field]: value } : b)),
-    );
+  const orderedQty = item?.requiredQty ?? 0;
+
+  const updateQuantity = (id: string, value: string) => {
+    setBatches((prev) => applyQuantityChange(prev, id, value, orderedQty));
   };
 
   const selectBatch = (rowId: string, batch: InventoryBatch) => {
-    setBatches((prev) => applyBatchSelection(prev, rowId, batch));
+    setBatches((prev) => applyBatchSelection(prev, rowId, batch, orderedQty));
     setOpenDropdownId(null);
   };
 
-  const orderedQty = item?.requiredQty ?? 0;
   const validation = validateBatches(batches, orderedQty);
   const canSave = validation.isValid;
   const exceedsOrdered = validation.error === "EXCEEDS_ORDERED";
@@ -128,6 +139,8 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
           justifyContent: "center",
           alignItems: "center",
           paddingHorizontal: 24,
+          paddingTop: insets.top + 24,
+          paddingBottom: insets.bottom + 24,
         }}
       >
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
@@ -137,17 +150,19 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
           style={{
             backgroundColor: "#fff",
             width: "100%",
+            maxHeight: "100%",
             borderRadius: 28,
             padding: 24,
           }}
         >
-          {/* Ordered Units */}
+          {/* Ordered Units — value sits over the quantity column */}
           <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
               marginBottom: 24,
+              paddingRight: COLUMN_GAP + REMOVE_SLOT_WIDTH,
             }}
           >
             <Text
@@ -162,8 +177,8 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
             <View
               style={{
                 backgroundColor: "#F2F2F2",
-                width: 72,
-                height: 52,
+                width: QTY_WIDTH,
+                height: ROW_HEIGHT,
                 borderRadius: 12,
                 alignItems: "center",
                 justifyContent: "center",
@@ -172,9 +187,11 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
               <Text
                 style={{
                   color: "#666666",
-                  fontSize: 26,
+                  fontSize: 22,
                   fontFamily: "Inter_700Bold",
                 }}
+                numberOfLines={1}
+                adjustsFontSizeToFit
               >
                 {item?.requiredQty ?? 0}
               </Text>
@@ -200,9 +217,10 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
           )}
 
           {/* Batch Rows */}
+          {/* Shrinks to the space left in the card so Save stays on screen */}
           <ScrollView
             showsVerticalScrollIndicator={false}
-            style={{ maxHeight: 260 }}
+            style={{ flexGrow: 0, flexShrink: 1 }}
           >
             {batches.map((batch, rowIndex) => {
               const isSystemRow = isSystemAssignedRow(rowIndex, item);
@@ -222,17 +240,19 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
                         testID="batch-readonly"
                         style={{
                           flex: 1,
-                          height: 54,
+                          minWidth: 0,
+                          height: ROW_HEIGHT,
                           borderWidth: 1.5,
                           borderColor: "#E0E0E0",
                           borderRadius: 12,
                           paddingHorizontal: 14,
                           justifyContent: "center",
-                          marginRight: 12,
                           backgroundColor: "#F2F2F2",
                         }}
                       >
                         <Text
+                          numberOfLines={1}
+                          ellipsizeMode="middle"
                           style={{
                             fontSize: 15,
                             fontFamily: "Inter_600SemiBold",
@@ -248,7 +268,8 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
                         testID="batch-dropdown"
                         style={{
                           flex: 1,
-                          height: 54,
+                          minWidth: 0,
+                          height: ROW_HEIGHT,
                           borderWidth: 1.5,
                           borderColor: isOpen
                             ? colors.brand.primary
@@ -258,7 +279,6 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
                           flexDirection: "row",
                           alignItems: "center",
                           justifyContent: "space-between",
-                          marginRight: 12,
                           backgroundColor: "#fff",
                         }}
                         onPress={() =>
@@ -268,6 +288,8 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
                         }
                       >
                         <Text
+                          numberOfLines={1}
+                          ellipsizeMode="middle"
                           style={{
                             fontSize: 15,
                             fontFamily: "Inter_600SemiBold",
@@ -275,6 +297,7 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
                               ? colors.text.DEFAULT
                               : "#BBBBBB",
                             flex: 1,
+                            marginRight: 8,
                           }}
                         >
                           {batch.batchNo || "Select batch"}
@@ -291,7 +314,13 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
 
                     {/* Quantity — placeholder drawn as overlay: a native placeholder
                                     makes the caret stick to the right on Android when centered */}
-                    <View style={{ width: 68, height: 54 }}>
+                    <View
+                      style={{
+                        width: QTY_WIDTH,
+                        height: ROW_HEIGHT,
+                        marginLeft: COLUMN_GAP,
+                      }}
+                    >
                       <TextInput
                         style={{
                           width: "100%",
@@ -299,7 +328,8 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
                           borderWidth: 1.5,
                           borderColor: colors.text.DEFAULT,
                           borderRadius: 12,
-                          fontSize: 24,
+                          paddingHorizontal: 4,
+                          fontSize: 20,
                           fontFamily: "Inter_700Bold",
                           textAlign: "center",
                           textAlignVertical: "center",
@@ -308,13 +338,7 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
                           color: colors.text.DEFAULT,
                         }}
                         value={batch.quantity}
-                        onChangeText={(val) =>
-                          updateBatch(
-                            batch.id,
-                            "quantity",
-                            val.replace(/[^0-9]/g, ""),
-                          )
-                        }
+                        onChangeText={(val) => updateQuantity(batch.id, val)}
                         keyboardType="numeric"
                         maxLength={4}
                       />
@@ -329,8 +353,8 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
                             bottom: 0,
                             textAlign: "center",
                             textAlignVertical: "center",
-                            lineHeight: 54,
-                            fontSize: 24,
+                            lineHeight: ROW_HEIGHT,
+                            fontSize: 20,
                             fontFamily: "Inter_700Bold",
                             color: "#BBBBBB",
                           }}
@@ -340,26 +364,36 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
                       )}
                     </View>
 
-                    {/* Remove row — only when more than one; system batch stays */}
-                    {batches.length > 1 && !isSystemRow && (
-                      <TouchableOpacity
-                        onPress={() => removeBatch(batch.id)}
-                        style={{ marginLeft: 8, padding: 4 }}
-                      >
-                        <Ionicons
-                          name="close-circle"
-                          size={22}
-                          color="#BBBBBB"
-                        />
-                      </TouchableOpacity>
-                    )}
+                    {/* Remove row — only when more than one; system batch stays.
+                        The slot is always reserved so quantities stay aligned. */}
+                    <View
+                      style={{
+                        width: REMOVE_SLOT_WIDTH,
+                        marginLeft: COLUMN_GAP,
+                        alignItems: "center",
+                      }}
+                    >
+                      {batches.length > 1 && !isSystemRow && (
+                        <TouchableOpacity
+                          onPress={() => removeBatch(batch.id)}
+                          hitSlop={8}
+                          style={{ padding: 4 }}
+                        >
+                          <Ionicons
+                            name="close-circle"
+                            size={22}
+                            color="#BBBBBB"
+                          />
+                        </TouchableOpacity>
+                      )}
+                    </View>
                   </View>
 
-                  {/* Dropdown Options */}
+                  {/* Dropdown Options — same width as the batch column */}
                   {isOpen && (
                     <View
                       style={{
-                        marginRight: 80,
+                        marginRight: TRAILING_WIDTH,
                         marginBottom: 8,
                         borderWidth: 1.5,
                         borderColor: "#E0E0E0",
@@ -401,6 +435,8 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
                             }}
                           >
                             <Text
+                              numberOfLines={1}
+                              ellipsizeMode="middle"
                               style={{
                                 fontSize: 14,
                                 fontFamily:
@@ -414,6 +450,7 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
                             </Text>
                             {b.expiryDate && (
                               <Text
+                                numberOfLines={1}
                                 style={{
                                   fontSize: 12,
                                   fontFamily: "Inter_400Regular",
@@ -443,7 +480,8 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
           {/* Add Batch */}
           <TouchableOpacity
             onPress={addBatch}
-            style={{ marginTop: 4, marginBottom: 24 }}
+            hitSlop={8}
+            style={{ alignSelf: "flex-start", marginTop: 8, marginBottom: 24 }}
           >
             <Text
               style={{

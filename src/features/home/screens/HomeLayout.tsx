@@ -5,8 +5,7 @@ import {
   Text,
   RefreshControl,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTabBarStore } from "@/src/store/useTabBarStore";
 import * as Haptics from "expo-haptics";

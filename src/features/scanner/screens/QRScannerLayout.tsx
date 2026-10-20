@@ -216,7 +216,7 @@ export const QRScannerLayout: React.FC = () => {
         edges={["bottom"]}
         style={{ flex: 1, backgroundColor: "#1A1A1A" }}
       >
-        <StatusBar style="light" translucent />
+        <StatusBar style="light" />
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           className="flex-1"
@@ -237,7 +237,7 @@ export const QRScannerLayout: React.FC = () => {
         edges={["bottom"]}
         style={{ flex: 1, backgroundColor: "#1A1A1A" }}
       >
-        <StatusBar style="light" translucent />
+        <StatusBar style="light" />
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           className="flex-1"
@@ -283,7 +283,7 @@ export const QRScannerLayout: React.FC = () => {
         edges={["bottom"]}
         style={{ flex: 1, backgroundColor: "#1A1A1A" }}
       >
-        <StatusBar style="light" translucent />
+        <StatusBar style="light" />
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           className="flex-1"
@@ -329,7 +329,7 @@ export const QRScannerLayout: React.FC = () => {
       edges={["bottom"]}
       style={{ flex: 1, backgroundColor: "#1A1A1A" }}
     >
-      <StatusBar style="light" translucent />
+      <StatusBar style="light" />
       <View className="flex-1">
         <Header />
 

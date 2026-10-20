@@ -1,4 +1,5 @@
 import "@/global.css";
+import "@/src/lib/cssInterop";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
