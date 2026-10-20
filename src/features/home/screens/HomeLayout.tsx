@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
-  InteractionManager,
   ScrollView,
   View,
   Text,
@@ -22,7 +21,6 @@ import StatsCard from "../components/StatsCard";
 import StatsScopeTabs from "../components/StatsScopeTabs";
 import { StatsScope } from "../types/home";
 import { HomeSkeletonList } from "../components/HomeSkeleton";
-import { pushNotificationService } from "@/src/services/pushNotification.service";
 import { canAccessTab, PanelTab } from "@/src/utils/tabAccess";
 
 // Stat card id → the tab it opens.
@@ -61,24 +59,6 @@ export const HomeLayout: React.FC = () => {
   const tabBarHeight = useTabBarStore((s) => s.tabBarHeight);
   // isLoading is only true before the first data arrives.
   const isInitialLoading = statsLoading || (!isLoaded && !user);
-
-  useEffect(() => {
-    // Let Home paint and navigation animations finish before showing the
-    // operating-system notification permission dialog.
-    const task = InteractionManager.runAfterInteractions(() => {
-      void pushNotificationService
-        .registerForPushAsync()
-        .then((token) => {
-          if (token && __DEV__) console.log("Expo Push Token:", token);
-        })
-        .catch((error) => {
-          if (__DEV__)
-            console.warn("Failed to register for push notifications:", error);
-        });
-    });
-
-    return () => task.cancel();
-  }, []);
 
   const onRefresh = async () => {
     setRefreshing(true);

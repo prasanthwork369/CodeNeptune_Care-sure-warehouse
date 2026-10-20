@@ -29,9 +29,6 @@ import {
 } from "@tanstack/react-query";
 import { AppState, Platform } from "react-native";
 
-import * as Notifications from "expo-notifications";
-import { notificationService } from "@/src/services/notification.service";
-import { useNotificationStore } from "@/src/store/useNotificationStore";
 import {
   useSyncFulfillment,
   useReleaseStaleLocks,
@@ -107,43 +104,8 @@ export default function RootLayout() {
     // (offline queue replay waits for the session restore)
     const unsubscribeNet = initNetworkListener(axiosInstance, sessionRestored);
 
-    // 3. Handle an initial notification response without requesting permission.
-    // Push permission is requested after the authenticated Home screen renders.
-    const handleInitialNotificationResponse = async () => {
-      // Check if app was opened by a notification (Killed state)
-      const initialResponse =
-        await Notifications.getLastNotificationResponseAsync();
-      if (initialResponse) {
-        notificationService.handleNotificationResponse(initialResponse);
-      }
-    };
-
-    handleInitialNotificationResponse();
-
-    // Listener for foreground notifications (Suppressed OS banner, Trigger Custom UI)
-    const notificationListener = Notifications.addNotificationReceivedListener(
-      (notification) => {
-        const { title, body, data } = notification.request.content;
-        useNotificationStore.getState().addNotification({
-          title: title || "Update",
-          message: body || "",
-          type: (data?.type as any) || "info",
-          orderId: data?.orderId as string | undefined,
-          imageUrl: data?.imageUrl as string | undefined, // Support images in OS-triggered notifications
-        });
-      },
-    );
-
-    // Listener for notification taps (Deep Linking)
-    const responseListener =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        notificationService.handleNotificationResponse(response);
-      });
-
     return () => {
       unsubscribeNet();
-      notificationListener.remove();
-      responseListener.remove();
     };
   }, []);
 
