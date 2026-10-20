@@ -4,11 +4,8 @@ import {
   ApiOrder,
   ApiPickerQueueResponse,
   ListOrdersParams,
-} from '@/src/features/picker/types/order.types';
-import {
-  FulfillmentStats,
-  StatsScope,
-} from "@/src/features/home/types/home";
+} from "@/src/features/picker/types/order.types";
+import { FulfillmentStats, StatsScope } from "@/src/features/home/types/home";
 
 export const orderApi = {
   list: async (params?: ListOrdersParams): Promise<ApiOrder[]> => {

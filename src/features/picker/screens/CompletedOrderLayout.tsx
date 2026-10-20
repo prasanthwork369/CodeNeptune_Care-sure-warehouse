@@ -5,8 +5,8 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { Order } from '@/src/features/picker/types/order.types';
-import { orderService } from '@/src/features/picker/services/order.service';
+import { Order } from "@/src/features/picker/types/order.types";
+import { orderService } from "@/src/features/picker/services/order.service";
 import { icons } from "@/src/constants/icons";
 import { colors } from "@/src/theme/colors";
 import BackButton from "@/src/components/common/BackButton";
@@ -18,7 +18,9 @@ export interface CompletedOrderLayoutProps {
   orderId: string;
 }
 
-export const CompletedOrderLayout: React.FC<CompletedOrderLayoutProps> = ({ orderId }) => {
+export const CompletedOrderLayout: React.FC<CompletedOrderLayoutProps> = ({
+  orderId,
+}) => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [order, setOrder] = useState<Order | null>(null);

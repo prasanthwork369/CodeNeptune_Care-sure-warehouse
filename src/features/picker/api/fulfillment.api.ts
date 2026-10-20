@@ -4,7 +4,7 @@ import {
   LockResult,
   ActiveLock,
   ExtendMinutes,
-} from '@/src/features/picker/types/fulfillment.types';
+} from "@/src/features/picker/types/fulfillment.types";
 
 export const fulfillmentApi = {
   pick: async (

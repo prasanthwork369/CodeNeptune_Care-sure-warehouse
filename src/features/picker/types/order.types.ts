@@ -1,4 +1,4 @@
-import { FulfillmentTypeValue } from '@/src/features/picker/constants/order.constants';
+import { FulfillmentTypeValue } from "@/src/features/picker/constants/order.constants";
 
 export type OrderStatus = "new" | "partial" | "completed";
 

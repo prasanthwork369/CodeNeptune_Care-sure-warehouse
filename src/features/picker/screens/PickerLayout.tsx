@@ -33,13 +33,13 @@ import {
 import { OrderSkeletonList } from "../components/OrderSkeleton";
 
 // Hooks & Stores
-import { useOrderStore } from '@/src/features/picker/store/useOrderStore';
-import { useOrdersQuery } from '@/src/features/picker/hooks/useOrders';
-import { usePickerScroll } from '@/src/features/picker/hooks/usePickerScroll';
+import { useOrderStore } from "@/src/features/picker/store/useOrderStore";
+import { useOrdersQuery } from "@/src/features/picker/hooks/useOrders";
+import { usePickerScroll } from "@/src/features/picker/hooks/usePickerScroll";
 import { useQuery } from "@tanstack/react-query";
-import { fetchActiveLocks } from '@/src/features/picker/hooks/useFulfillment';
-import { orderApi } from '@/src/features/picker/api/order.api';
-import { mapOrder } from '@/src/features/picker/services/order.service';
+import { fetchActiveLocks } from "@/src/features/picker/hooks/useFulfillment";
+import { orderApi } from "@/src/features/picker/api/order.api";
+import { mapOrder } from "@/src/features/picker/services/order.service";
 
 const SEARCH_HEIGHT = 80;
 
@@ -175,7 +175,6 @@ export const PickerLayout = () => {
   return (
     <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
       <View className="flex-1 bg-white">
-
         {/* Header */}
         <View className="px-5 py-6 bg-white flex-row justify-between items-center">
           <Text className="text-[28px] font-inter-bold text-[#222222] tracking-tighter">

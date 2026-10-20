@@ -37,7 +37,10 @@ const TRAIL_SPRING = { damping: 22, stiffness: 320, mass: 0.6 } as const;
 
 const AnimatedText = Animated.createAnimatedComponent(Text);
 
-const FloatingTabBar = ({ state, navigateToTab: goToRoute }: BottomTabBarProps) => {
+const FloatingTabBar = ({
+  state,
+  navigateToTab: goToRoute,
+}: BottomTabBarProps) => {
   const insets = useSafeAreaInsets();
   const [barHeight, setBarHeight] = useState(0);
   const setTabBarHeight = useTabBarStore((s) => s.setTabBarHeight);

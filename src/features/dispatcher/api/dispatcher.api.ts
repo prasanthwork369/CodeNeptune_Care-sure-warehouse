@@ -1,7 +1,7 @@
 import { API_ENDPOINTS } from "@/src/utils/urls";
 import { apiClient } from "@/src/api/client";
-import { ApiOrder } from '@/src/features/picker/types/order.types';
-import { DispatchedOrder } from '@/src/features/dispatcher/types/dispatcher';
+import { ApiOrder } from "@/src/features/picker/types/order.types";
+import { DispatchedOrder } from "@/src/features/dispatcher/types/dispatcher";
 
 export const dispatcherApi = {
   getAllDispatcherOrders: async (): Promise<ApiOrder[]> => {
@@ -36,7 +36,12 @@ export const dispatcherApi = {
   },
 
   rejectDispatch: async (orderId: string, reason: string): Promise<void> => {
-    console.log("❌ [Dispatcher API] Rejecting dispatch for order:", orderId, "Reason:", reason);
+    console.log(
+      "❌ [Dispatcher API] Rejecting dispatch for order:",
+      orderId,
+      "Reason:",
+      reason,
+    );
     await apiClient.post(
       API_ENDPOINTS.FULFILLMENT_REJECT_DISPATCH(orderId),
       { reason },

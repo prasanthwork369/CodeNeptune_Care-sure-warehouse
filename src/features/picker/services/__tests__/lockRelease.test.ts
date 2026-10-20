@@ -80,10 +80,13 @@ test("locks for other orders are never filtered", () => {
   tracker.start("order-1");
   const locks = [{ orderId: "order-1" }, { orderId: "order-3" }];
   assert.deepEqual(tracker.filter(locks, c.now()), [{ orderId: "order-3" }]);
-  assert.deepEqual(visibleNewOrders(["order-1", "order-2", "order-3"], tracker.filter(locks, c.now())), [
-    "order-1",
-    "order-2",
-  ]);
+  assert.deepEqual(
+    visibleNewOrders(
+      ["order-1", "order-2", "order-3"],
+      tracker.filter(locks, c.now()),
+    ),
+    ["order-1", "order-2"],
+  );
 });
 
 test("settled releases are pruned after the TTL", () => {

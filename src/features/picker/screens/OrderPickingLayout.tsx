@@ -9,18 +9,22 @@ import {
 import { useFocusEffect } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { Order, OrderItem, BatchRow } from '@/src/features/picker/types/order.types';
-import { orderService } from '@/src/features/picker/services/order.service';
-import { useFulfillmentActions } from '@/src/features/picker/hooks/useFulfillment';
-import { fulfillmentApi } from '@/src/features/picker/api/fulfillment.api';
+import {
+  Order,
+  OrderItem,
+  BatchRow,
+} from "@/src/features/picker/types/order.types";
+import { orderService } from "@/src/features/picker/services/order.service";
+import { useFulfillmentActions } from "@/src/features/picker/hooks/useFulfillment";
+import { fulfillmentApi } from "@/src/features/picker/api/fulfillment.api";
 import {
   validateBatches,
   getBatchTotal,
   findOverPickedItems,
-} from '@/src/features/picker/services/batch.validation';
+} from "@/src/features/picker/services/batch.validation";
 import { useQueryClient } from "@tanstack/react-query";
 import { refreshQueries } from "@/src/lib/refreshQueries";
-import { ExtendMinutes } from '@/src/features/picker/types/fulfillment.types';
+import { ExtendMinutes } from "@/src/features/picker/types/fulfillment.types";
 import OrderItemCard from "../components/OrderItemCard";
 import PickingProgressFooter from "../components/PickingProgressFooter";
 import ConfirmMoveBottomSheet from "../components/ConfirmMoveBottomSheet";
@@ -30,7 +34,7 @@ import SessionExpirySheet from "../components/SessionExpirySheet";
 import OrderInfoPopup from "../components/OrderInfoPopup";
 import QRCodeModal from "../components/QRCodeModal";
 import BackButton from "@/src/components/common/BackButton";
-import { useOrderStore } from '@/src/features/picker/store/useOrderStore';
+import { useOrderStore } from "@/src/features/picker/store/useOrderStore";
 import { icons } from "@/src/constants/icons";
 import colors from "@/src/theme/colors";
 import { ItemPickingSkeletonList } from "../components/ItemPickingSkeleton";

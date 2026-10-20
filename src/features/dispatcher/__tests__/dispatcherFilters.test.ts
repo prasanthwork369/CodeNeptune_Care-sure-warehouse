@@ -9,7 +9,8 @@ import {
 } from "../utils/dispatcherFilters";
 
 const today = new Date(2026, 9, 15, 12);
-const at = (day: number, hour = 10) => new Date(2026, 9, day, hour).toISOString();
+const at = (day: number, hour = 10) =>
+  new Date(2026, 9, day, hour).toISOString();
 
 const order = (overrides: Partial<ApiOrder>): ApiOrder => ({
   id: "o1",
@@ -27,7 +28,12 @@ const order = (overrides: Partial<ApiOrder>): ApiOrder => ({
   },
   total: "100",
   createdAt: at(10),
-  customer: { firstName: "Jane", lastName: "Doe", email: "jane@example.com", phone: "9876543210" },
+  customer: {
+    firstName: "Jane",
+    lastName: "Doe",
+    email: "jane@example.com",
+    phone: "9876543210",
+  },
   items: [],
   ...overrides,
 });
@@ -68,13 +74,19 @@ test("delivered order counts as Dispatched on the day it shipped, not the day de
       { toStatus: 7, createdAt: at(15, 18) },
     ],
   });
-  assert.deepEqual(dispatchedToday([shippedToday, shippedYesterday]).map((o) => o.id), ["o1"]);
+  assert.deepEqual(
+    dispatchedToday([shippedToday, shippedYesterday]).map((o) => o.id),
+    ["o1"],
+  );
 });
 
 test("without status logs, falls back to updatedAt, then createdAt", () => {
   assert.equal(getDispatchEventDate(order({ updatedAt: at(15) })), at(15));
   assert.equal(getDispatchEventDate(order({ createdAt: at(15) })), at(15));
-  assert.equal(dispatchedToday([order({ createdAt: at(10), updatedAt: at(15) })]).length, 1);
+  assert.equal(
+    dispatchedToday([order({ createdAt: at(10), updatedAt: at(15) })]).length,
+    1,
+  );
 });
 
 test("dispatch-failed orders use the DISPATCHER_CANCEL log and stay out of Dispatched", () => {
@@ -88,13 +100,19 @@ test("dispatch-failed orders use the DISPATCHER_CANCEL log and stay out of Dispa
 });
 
 test("non-dispatcher statuses (e.g. PACKED, CHECKED) are in neither section", () => {
-  const orders = [order({ status: 14, updatedAt: at(15) }), order({ status: 5, updatedAt: at(15) })];
+  const orders = [
+    order({ status: 14, updatedAt: at(15) }),
+    order({ status: 5, updatedAt: at(15) }),
+  ];
   assert.equal(dispatchedToday(orders).length, 0);
   assert.equal(failedToday(orders).length, 0);
 });
 
 test("orders dispatched on an earlier day are excluded from today", () => {
-  const o = order({ statusLogs: [{ toStatus: 6, createdAt: at(14) }], updatedAt: at(14) });
+  const o = order({
+    statusLogs: [{ toStatus: 6, createdAt: at(14) }],
+    updatedAt: at(14),
+  });
   assert.equal(dispatchedToday([o]).length, 0);
 });
 

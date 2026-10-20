@@ -5,7 +5,7 @@ import { Image } from "expo-image";
 import { Order } from "@/src/features/picker/types/order.types";
 import { icons } from "@/src/constants/icons";
 import { colors } from "@/src/theme/colors";
-import TimeAgo from '@/src/components/common/TimeAgo';
+import TimeAgo from "@/src/components/common/TimeAgo";
 
 interface OrderCardProps {
   order: Order;

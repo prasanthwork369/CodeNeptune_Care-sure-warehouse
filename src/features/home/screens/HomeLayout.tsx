@@ -1,10 +1,5 @@
 import React, { useCallback, useState } from "react";
-import {
-  ScrollView,
-  View,
-  Text,
-  RefreshControl,
-} from "react-native";
+import { ScrollView, View, Text, RefreshControl } from "react-native";
 import { useFocusEffect, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTabBarStore } from "@/src/store/useTabBarStore";

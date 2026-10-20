@@ -9,8 +9,16 @@ const makeClient = () =>
     defaultOptions: { queries: { staleTime: 1000 * 60 * 5, retry: false } },
   });
 
-const userA = { id: "a", email: "a@caresure.test", profile: { firstName: "Alice" } };
-const userB = { id: "b", email: "b@caresure.test", profile: { firstName: "Bob" } };
+const userA = {
+  id: "a",
+  email: "a@caresure.test",
+  profile: { firstName: "Alice" },
+};
+const userB = {
+  id: "b",
+  email: "b@caresure.test",
+  profile: { firstName: "Bob" },
+};
 
 // What useUserQuery does when a screen mounts: serve fresh cache, else GET /users/me
 const loadProfile = (client: QueryClient, me: typeof userA) =>

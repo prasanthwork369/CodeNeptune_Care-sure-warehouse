@@ -1,9 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { refreshQueries } from "@/src/lib/refreshQueries";
-import { orderService } from '@/src/features/picker/services/order.service';
+import { orderService } from "@/src/features/picker/services/order.service";
 import { toAppError } from "@/src/api/errors";
 import { useNotificationStore } from "@/src/store/useNotificationStore";
-import { ListOrdersParams } from '@/src/features/picker/types/order.types';
+import { ListOrdersParams } from "@/src/features/picker/types/order.types";
 
 // No polling: kept fresh by order socket events, reconnect resync and
 // mutation refreshes (useSyncFulfillment / useFulfillmentActions)

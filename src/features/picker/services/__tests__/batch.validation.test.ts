@@ -15,7 +15,10 @@ const row = (id: string, batchNo: string, quantity: string): BatchRow => ({
 
 test("D_ID_11: combined batch quantity above ordered quantity is rejected", () => {
   // Ordered 10: first row pre-filled with 10, picker adds a second batch of 5
-  const result = validateBatches([row("1", "B1", "10"), row("2", "B2", "5")], 10);
+  const result = validateBatches(
+    [row("1", "B1", "10"), row("2", "B2", "5")],
+    10,
+  );
   assert.equal(result.isValid, false);
   assert.equal(result.error, "EXCEEDS_ORDERED");
   assert.equal(result.total, 15);
@@ -40,7 +43,10 @@ test("valid multi-batch allocation equal to ordered quantity is accepted", () =>
 });
 
 test("multi-batch allocation below ordered quantity is accepted (partial pick)", () => {
-  const result = validateBatches([row("1", "B1", "3"), row("2", "B2", "2")], 10);
+  const result = validateBatches(
+    [row("1", "B1", "3"), row("2", "B2", "2")],
+    10,
+  );
   assert.deepEqual(result, { isValid: true, total: 5 });
 });
 
@@ -74,7 +80,11 @@ test("missing batch number or zero/empty quantity is still rejected", () => {
 
 test("getBatchTotal ignores empty and non-numeric quantities", () => {
   assert.equal(
-    getBatchTotal([row("1", "B1", "7"), row("2", "B2", ""), row("3", "B3", "x")]),
+    getBatchTotal([
+      row("1", "B1", "7"),
+      row("2", "B2", ""),
+      row("3", "B3", "x"),
+    ]),
     7,
   );
 });

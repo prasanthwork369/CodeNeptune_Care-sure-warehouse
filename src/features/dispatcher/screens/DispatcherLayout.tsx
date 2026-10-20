@@ -20,8 +20,8 @@ import {
 } from "../utils/dispatcherFilters";
 
 // Sections
-import DispatcherTabs from '../components/DispatcherTabs';
-import DispatcherOrderCard from '../components/DispatcherOrderCard';
+import DispatcherTabs from "../components/DispatcherTabs";
+import DispatcherOrderCard from "../components/DispatcherOrderCard";
 import ScanBanner from "@/src/components/common/ScanBanner";
 
 export const DispatcherLayout = () => {

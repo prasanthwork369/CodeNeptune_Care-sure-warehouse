@@ -14,4 +14,4 @@ export {
   FULFILLMENT_TYPE,
   FULFILLMENT_TYPE_LABELS,
   type FulfillmentTypeValue,
-} from '@/src/features/picker/constants/order.constants';
+} from "@/src/features/picker/constants/order.constants";

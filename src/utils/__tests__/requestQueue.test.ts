@@ -268,7 +268,11 @@ test("storage write fails before replay: nothing is sent or lost, and a retry se
   const settled: string[] = [];
   // a live caller waiting on its queued request (as apiClient does)
   await queue.add(
-    { url: "/3", method: "post", headers: { Authorization: `Bearer ${TOKEN_A}` } },
+    {
+      url: "/3",
+      method: "post",
+      headers: { Authorization: `Bearer ${TOKEN_A}` },
+    },
     () => settled.push("resolved"),
     () => settled.push("rejected"),
   );

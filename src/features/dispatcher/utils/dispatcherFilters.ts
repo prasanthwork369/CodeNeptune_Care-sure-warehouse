@@ -4,7 +4,10 @@ import { isSameLocalDay } from "@/src/utils/dateUtils";
 
 // Dispatcher business rules (unchanged): SHIPPED/DELIVERED → Dispatched,
 // DISPATCHER_CANCEL → Dispatch Failed.
-const DISPATCHED_STATUSES: number[] = [ORDER_STATUS.SHIPPED, ORDER_STATUS.DELIVERED];
+const DISPATCHED_STATUSES: number[] = [
+  ORDER_STATUS.SHIPPED,
+  ORDER_STATUS.DELIVERED,
+];
 
 export const isDispatchedOrder = (o: ApiOrder) =>
   DISPATCHED_STATUSES.includes(Number(o.status));

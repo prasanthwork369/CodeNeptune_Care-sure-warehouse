@@ -5,11 +5,17 @@ import { isSameLocalDay } from "../dateUtils";
 const today = new Date(2026, 9, 15, 12);
 
 test("Checker Today includes an updatedAt on the same device-local day", () => {
-  assert.equal(isSameLocalDay(new Date(2026, 9, 15, 1).toISOString(), today), true);
+  assert.equal(
+    isSameLocalDay(new Date(2026, 9, 15, 1).toISOString(), today),
+    true,
+  );
 });
 
 test("Checker Today excludes an updatedAt from yesterday", () => {
-  assert.equal(isSameLocalDay(new Date(2026, 9, 14, 23, 59).toISOString(), today), false);
+  assert.equal(
+    isSameLocalDay(new Date(2026, 9, 14, 23, 59).toISOString(), today),
+    false,
+  );
 });
 
 test("Checker Today excludes missing or invalid updatedAt values", () => {

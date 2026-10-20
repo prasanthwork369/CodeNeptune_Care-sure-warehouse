@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import Skeleton from '@/src/components/common/Skeleton';
+import Skeleton from "@/src/components/common/Skeleton";
 
 const ItemPickingSkeleton = () => {
   return (

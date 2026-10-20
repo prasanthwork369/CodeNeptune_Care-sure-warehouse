@@ -1,21 +1,17 @@
 import { useEffect } from "react";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { refreshQueries } from "@/src/lib/refreshQueries";
-import { fulfillmentApi } from '@/src/features/picker/api/fulfillment.api';
-import { ExtendMinutes } from '@/src/features/picker/types/fulfillment.types';
+import { fulfillmentApi } from "@/src/features/picker/api/fulfillment.api";
+import { ExtendMinutes } from "@/src/features/picker/types/fulfillment.types";
 import { toAppError } from "@/src/api/errors";
 import { useNotificationStore } from "@/src/store/useNotificationStore";
 import { useAuthStore } from "@/src/store/useAuthStore";
 import { useSocket } from "@/src/hooks/useSocket";
-import { releaseTracker } from '@/src/features/picker/services/lockRelease';
+import { releaseTracker } from "@/src/features/picker/services/lockRelease";
 import {
   refreshSyncedQueries,
   subscribeFulfillmentEvents,
-} from '@/src/features/picker/services/fulfillmentSync';
+} from "@/src/features/picker/services/fulfillmentSync";
 
 // Orders claimed during this JS session — never auto-released by the startup cleanup.
 // Module-level so it resets on a full app reload, which is exactly the case we clean up after.

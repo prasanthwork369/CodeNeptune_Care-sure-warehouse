@@ -4,7 +4,7 @@ import Animated, {
   useAnimatedScrollHandler,
   runOnJS,
 } from "react-native-reanimated";
-import { OrderStatus } from '@/src/features/picker/types/order.types';
+import { OrderStatus } from "@/src/features/picker/types/order.types";
 
 export function usePickerScroll(
   activeTab: OrderStatus,

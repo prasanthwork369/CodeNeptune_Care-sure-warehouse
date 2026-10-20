@@ -68,7 +68,7 @@ export const API_ENDPOINTS = {
   // Packing
   FULFILLMENT_PACK: (orderId: string) =>
     `/api/v1/fulfillment/orders/${orderId}/pack`,
-  
+
   FULFILLMENT_QUALITY_CHECKS: (orderId: string) =>
     `/api/v1/fulfillment/orders/${orderId}/quality-checks`,
 

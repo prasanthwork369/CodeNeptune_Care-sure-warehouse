@@ -23,7 +23,11 @@ const setup = async () => {
     () => storage,
     () => null,
   );
-  await queue.add({ url: "/userA/release", method: "delete" }, () => {}, () => {});
+  await queue.add(
+    { url: "/userA/release", method: "delete" },
+    () => {},
+    () => {},
+  );
   return { queue, endLocalSession: () => queue.clear() };
 };
 

@@ -33,8 +33,7 @@ const ROW_HEIGHT = 54;
 const QTY_WIDTH = 76;
 const COLUMN_GAP = 10;
 const REMOVE_SLOT_WIDTH = 30;
-const TRAILING_WIDTH =
-  COLUMN_GAP + QTY_WIDTH + COLUMN_GAP + REMOVE_SLOT_WIDTH;
+const TRAILING_WIDTH = COLUMN_GAP + QTY_WIDTH + COLUMN_GAP + REMOVE_SLOT_WIDTH;
 
 interface BatchSelectionModalProps {
   isVisible: boolean;

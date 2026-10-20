@@ -1,5 +1,5 @@
-import { fulfillmentApi } from '@/src/features/picker/api/fulfillment.api';
-import { ExtendMinutes } from '@/src/features/picker/types/fulfillment.types';
+import { fulfillmentApi } from "@/src/features/picker/api/fulfillment.api";
+import { ExtendMinutes } from "@/src/features/picker/types/fulfillment.types";
 
 export const fulfillmentService = {
   claim: (orderId: string) => fulfillmentApi.claim(orderId),

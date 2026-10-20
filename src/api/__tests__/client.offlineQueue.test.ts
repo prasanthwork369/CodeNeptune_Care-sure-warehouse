@@ -100,7 +100,11 @@ const serverError =
 
 // Profile photo upload exactly as useImageUpload starts it
 const uploadAvatar = () =>
-  userService.uploadAvatar("file:///cache/avatar.jpg", "avatar.jpg", "image/jpeg");
+  userService.uploadAvatar(
+    "file:///cache/avatar.jpg",
+    "avatar.jpg",
+    "image/jpeg",
+  );
 
 // A queued request's promise stays pending until replay; settle check only
 const isPending = async (p: Promise<unknown>) => {
@@ -199,7 +203,11 @@ for (const [status, kind] of [
 
 test("why uploads cannot be queued: persisting RN FormData drops the file", () => {
   const body = new RNFormData();
-  body.append("file", { uri: "file:///cache/avatar.jpg", name: "a.jpg", type: "image/jpeg" } as any);
+  body.append("file", {
+    uri: "file:///cache/avatar.jpg",
+    name: "a.jpg",
+    type: "image/jpeg",
+  } as any);
 
   const restored = JSON.parse(JSON.stringify({ data: body })).data;
 

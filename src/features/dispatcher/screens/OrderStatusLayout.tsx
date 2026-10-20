@@ -25,13 +25,15 @@ import {
 import { icons } from "@/src/constants/icons";
 import { colors } from "@/src/theme/colors";
 import { formatOrderDate } from "@/src/utils/dateUtils";
-import CancelDispatchModal from '../components/CancelDispatchModal';
+import CancelDispatchModal from "../components/CancelDispatchModal";
 
 export interface OrderStatusLayoutProps {
   orderId?: string;
 }
 
-export const OrderStatusLayout: React.FC<OrderStatusLayoutProps> = ({ orderId: propOrderId }) => {
+export const OrderStatusLayout: React.FC<OrderStatusLayoutProps> = ({
+  orderId: propOrderId,
+}) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { orderId: paramOrderId } = useLocalSearchParams<{ orderId: string }>();
@@ -59,11 +61,11 @@ export const OrderStatusLayout: React.FC<OrderStatusLayoutProps> = ({ orderId: p
 
   const order = apiOrder ? mapOrder(apiOrder) : null;
   const rawStatus = Number(apiOrder?.status);
-  const isReady = rawStatus === ORDER_STATUS.PACKED
+  const isReady = rawStatus === ORDER_STATUS.PACKED;
 
   const isCancelled =
     rawStatus === ORDER_STATUS.CANCELLED ||
-    rawStatus === ORDER_STATUS.DISPATCHER_CANCEL
+    rawStatus === ORDER_STATUS.DISPATCHER_CANCEL;
 
   const cancelledAt = (apiOrder as any)?.cancelledAt
     ? formatOrderDate((apiOrder as any).cancelledAt)

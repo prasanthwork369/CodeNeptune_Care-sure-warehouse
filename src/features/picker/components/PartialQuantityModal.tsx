@@ -17,7 +17,7 @@ import Animated, {
   interpolate,
 } from "react-native-reanimated";
 import { OrderItem } from "@/src/features/picker/types/order.types";
-import CustomKeypad from '@/src/components/common/CustomKeypad';
+import CustomKeypad from "@/src/components/common/CustomKeypad";
 import { colors } from "@/src/theme/colors";
 
 interface PartialQuantityModalProps {

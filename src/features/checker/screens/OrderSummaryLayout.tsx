@@ -22,7 +22,9 @@ export interface OrderSummaryLayoutProps {
   orderId: string;
 }
 
-export const OrderSummaryLayout: React.FC<OrderSummaryLayoutProps> = ({ orderId }) => {
+export const OrderSummaryLayout: React.FC<OrderSummaryLayoutProps> = ({
+  orderId,
+}) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const insets = useSafeAreaInsets();
@@ -107,7 +109,8 @@ export const OrderSummaryLayout: React.FC<OrderSummaryLayoutProps> = ({ orderId 
           className="text-[14px] font-inter text-center mb-8"
           style={{ color: colors.text.secondary }}
         >
-          This order has already been checked successfully. Please scan another order.
+          This order has already been checked successfully. Please scan another
+          order.
         </Text>
         <TouchableOpacity
           className="bg-[#0F7635] px-8 py-3 rounded-full"

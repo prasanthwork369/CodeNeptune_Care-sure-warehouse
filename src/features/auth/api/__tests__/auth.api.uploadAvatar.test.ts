@@ -42,18 +42,17 @@ const axios = require("axios");
 /* eslint-enable @typescript-eslint/no-require-imports */
 
 type Config = { url: string; method: string };
-const respond =
-  (status: number, data: unknown) => async (config: Config) => {
-    const response = { status, statusText: "", data, headers: {}, config };
-    if (status >= 200 && status < 300) return response;
-    throw new axios.AxiosError(
-      `Request failed with status code ${status}`,
-      "ERR_BAD_RESPONSE",
-      config,
-      null,
-      response,
-    );
-  };
+const respond = (status: number, data: unknown) => async (config: Config) => {
+  const response = { status, statusText: "", data, headers: {}, config };
+  if (status >= 200 && status < 300) return response;
+  throw new axios.AxiosError(
+    `Request failed with status code ${status}`,
+    "ERR_BAD_RESPONSE",
+    config,
+    null,
+    response,
+  );
+};
 
 const upload = () => authApi.uploadAvatar(new FormData());
 
@@ -91,7 +90,10 @@ test("HTTP error rejects with the server's message, not a success result", async
 test("validation error (422) rejects as a validation AppError", async () => {
   apiClient.defaults.adapter = respond(422, { message: "File too large" });
 
-  await assert.rejects(upload(), { kind: "validation", message: "File too large" });
+  await assert.rejects(upload(), {
+    kind: "validation",
+    message: "File too large",
+  });
 });
 
 test("offline device rejects with a network error, not a success result", async () => {

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Order, OrderStatus } from '@/src/features/picker/types/order.types';
+import { Order, OrderStatus } from "@/src/features/picker/types/order.types";
 
 interface OrderState {
   orders: Order[];

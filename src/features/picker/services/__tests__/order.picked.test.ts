@@ -100,14 +100,8 @@ test("2. Picked event uses the API timestamp for completionDate and pickedAt", (
     order.completionDate,
     formatOrderDate("2026-10-08T04:45:33.457Z"),
   );
-  assert.notEqual(
-    order.completionDate,
-    formatOrderDate(apiOrder.createdAt),
-  );
-  assert.notEqual(
-    order.completionDate,
-    formatOrderDate(apiOrder.updatedAt!),
-  );
+  assert.notEqual(order.completionDate, formatOrderDate(apiOrder.createdAt));
+  assert.notEqual(order.completionDate, formatOrderDate(apiOrder.updatedAt!));
 });
 
 test("3. Picked event uses the API performer and handles missing optional name/role fields safely", () => {

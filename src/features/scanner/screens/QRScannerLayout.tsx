@@ -132,13 +132,19 @@ export const QRScannerLayout: React.FC = () => {
     (cleanId: string) => {
       setIsNavigating(true);
       if (isDispatcher) {
-        console.log("🔍 [QRScanner] Dispatcher scan navigating with orderId:", cleanId);
+        console.log(
+          "🔍 [QRScanner] Dispatcher scan navigating with orderId:",
+          cleanId,
+        );
         router.replace({
           pathname: "/dispatching/order-status",
           params: { orderId: cleanId },
         } as any);
       } else {
-        console.log("🔍 [QRScanner] Checker scan navigating with orderId:", cleanId);
+        console.log(
+          "🔍 [QRScanner] Checker scan navigating with orderId:",
+          cleanId,
+        );
         router.replace(`/packing/order-summary/${cleanId}` as any);
       }
     },

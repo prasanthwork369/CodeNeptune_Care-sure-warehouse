@@ -66,7 +66,9 @@ const { getAccessToken } = require("../../api/client");
 const { useNetworkStore } = require("../useNetworkStore");
 const { authService } = require("../../features/auth/services/auth.service");
 const { apiClient } = require("../../api/client");
-const { orderService } = require("../../features/picker/services/order.service");
+const {
+  orderService,
+} = require("../../features/picker/services/order.service");
 const { useOrderStore } = require("../../features/picker/store/useOrderStore");
 const { useNotificationStore } = require("../useNotificationStore");
 const { setUnauthorizedHandler } = require("../../api/client");
@@ -176,7 +178,10 @@ const pickerQueueBy: Record<string, ReturnType<typeof apiOrder>[]> = {
 apiClient.defaults.adapter = async (config: {
   headers: Record<string, string>;
 }) => ({
-  data: { success: true, data: pickerQueueBy[config.headers.Authorization] ?? [] },
+  data: {
+    success: true,
+    data: pickerQueueBy[config.headers.Authorization] ?? [],
+  },
   status: 200,
   statusText: "OK",
   headers: {},
@@ -259,7 +264,6 @@ const persistedHistoryTitles = () => {
     : [];
 };
 
-
 // Lets pending storage reads/writes and the session check finish
 const settle = async () => {
   for (let i = 0; i < 10; i++) await new Promise((r) => setImmediate(r));
@@ -284,7 +288,9 @@ const restartApp = (): {
 };
 
 const notify = (store: NotificationStore, title: string, silent = false) =>
-  store.getState().addNotification({ title, message: "", type: "info", silent });
+  store
+    .getState()
+    .addNotification({ title, message: "", type: "info", silent });
 
 // User A logs in and receives two notifications (one only in history)
 const notifyAsA = async () => {
@@ -294,7 +300,10 @@ const notifyAsA = async () => {
   notify(useNotificationStore, "A: order opened", true);
   await settle();
   assert.deepEqual(historyTitles(), ["A: order opened", "A: order ready"]);
-  assert.deepEqual(persistedHistoryTitles(), ["A: order opened", "A: order ready"]);
+  assert.deepEqual(persistedHistoryTitles(), [
+    "A: order opened",
+    "A: order ready",
+  ]);
 };
 
 test("logout clears notification history in memory and in storage", async () => {
@@ -331,7 +340,11 @@ test("expired session (401, refresh rejected) clears history", async () => {
   const unauthorized = (config: unknown) =>
     Promise.reject(
       new axios.AxiosError("Unauthorized", "ERR_BAD_REQUEST", config, null, {
-        status: 401, statusText: "Unauthorized", headers: {}, config, data: {},
+        status: 401,
+        statusText: "Unauthorized",
+        headers: {},
+        config,
+        data: {},
       }),
     );
   const apiAdapter = apiClient.defaults.adapter;
@@ -378,7 +391,10 @@ test("history cleanup fails on logout, app restarts: neither User B nor User A s
     await settle();
     assert.deepEqual(historyTitles(), []);
     // The cleared history could not be written: User A's copy is still on disk
-    assert.deepEqual(persistedHistoryTitles(), ["A: order opened", "A: order ready"]);
+    assert.deepEqual(persistedHistoryTitles(), [
+      "A: order opened",
+      "A: order ready",
+    ]);
 
     // Same launch: User A logs straight back in (new session, same user id)
     await useAuthStore.getState().login(TOKEN_A);
@@ -420,12 +436,18 @@ test("history survives app restarts while the same session stays logged in", asy
   const app = restartApp();
   await app.starting;
   await settle();
-  assert.deepEqual(historyTitles(app.notifications), ["A: order opened", "A: order ready"]);
+  assert.deepEqual(historyTitles(app.notifications), [
+    "A: order opened",
+    "A: order ready",
+  ]);
 
   // Home's pull-to-refresh runs initialize() again: same session, same history
   await app.auth.getState().initialize();
   await settle();
-  assert.deepEqual(historyTitles(app.notifications), ["A: order opened", "A: order ready"]);
+  assert.deepEqual(historyTitles(app.notifications), [
+    "A: order opened",
+    "A: order ready",
+  ]);
 
   notify(app.notifications, "A: after restart");
   await settle();
@@ -443,7 +465,9 @@ test("legacy history without a session tag is never shown", async () => {
     NOTIFICATION_KEY,
     JSON.stringify({
       state: {
-        history: [{ id: "x", title: "legacy", message: "", type: "info", timestamp: 1 }],
+        history: [
+          { id: "x", title: "legacy", message: "", type: "info", timestamp: 1 },
+        ],
       },
       version: 0,
     }),
@@ -472,7 +496,9 @@ test("stored history is not shown before the session check finishes", async () =
     notify(app.notifications, "A: arrived during startup", true);
     await app.starting; // session restored; history read still pending
     await settle();
-    assert.deepEqual(historyTitles(app.notifications), ["A: arrived during startup"]);
+    assert.deepEqual(historyTitles(app.notifications), [
+      "A: arrived during startup",
+    ]);
 
     finishRead();
     await settle();
@@ -519,22 +545,42 @@ test("notification behaviour is unchanged while logged in", async () => {
   assert.equal(before, 0);
 
   addNotification({ title: "toast", message: "", type: "info", orderId: "x1" });
-  addNotification({ title: "toast again", message: "", type: "info", orderId: "x1" });
-  addNotification({ title: "history only", message: "", type: "info", silent: true });
+  addNotification({
+    title: "toast again",
+    message: "",
+    type: "info",
+    orderId: "x1",
+  });
+  addNotification({
+    title: "history only",
+    message: "",
+    type: "info",
+    silent: true,
+  });
   await settle();
 
   // Duplicate orderId is not shown twice; silent goes to history only
-  const visibleTitles = store.getState().visible.map((n: { title: string }) => n.title);
+  const visibleTitles = store
+    .getState()
+    .visible.map((n: { title: string }) => n.title);
   assert.equal(store.getState().visible.length, before + 1);
   assert.ok(visibleTitles.includes("toast"));
-  assert.deepEqual(historyTitles().slice(0, 3), ["history only", "toast again", "toast"]);
+  assert.deepEqual(historyTitles().slice(0, 3), [
+    "history only",
+    "toast again",
+    "toast",
+  ]);
   // Only history (and its session tag) is persisted, not on-screen toasts
   assert.deepEqual(
-    Object.keys(JSON.parse(asyncStorageData.get(NOTIFICATION_KEY)!).state).sort(),
+    Object.keys(
+      JSON.parse(asyncStorageData.get(NOTIFICATION_KEY)!).state,
+    ).sort(),
     ["history", "historySession"],
   );
 
-  const toast = store.getState().visible.find((n: { title: string }) => n.title === "toast");
+  const toast = store
+    .getState()
+    .visible.find((n: { title: string }) => n.title === "toast");
   store.getState().removeNotification(toast.id);
   assert.equal(store.getState().visible.length, before);
 
@@ -558,7 +604,10 @@ const appWithToastsForA = async () => {
   await settle();
   for (const n of [1, 2, 3, 4]) {
     app.notifications.getState().addNotification({
-      title: `A${n}`, message: "", type: "info", orderId: `a${n}`,
+      title: `A${n}`,
+      message: "",
+      type: "info",
+      orderId: `a${n}`,
     });
   }
   assert.deepEqual(toastTitles(app.notifications), {
@@ -588,7 +637,10 @@ test("logout with the logout API offline still clears toasts", async () => {
       ),
     );
 
-    assert.deepEqual(toastTitles(app.notifications), { visible: [], queue: [] });
+    assert.deepEqual(toastTitles(app.notifications), {
+      visible: [],
+      queue: [],
+    });
   } finally {
     useNetworkStore.getState().setIsConnected(true, true);
   }
@@ -604,7 +656,11 @@ test("User A's request failing after logout shows no toast, then or for User B",
   const release = new MutationObserver(queryClient, {
     mutationFn: () => new Promise((_, reject) => (failRelease = reject)),
     onError: () =>
-      addNotificationAtRender({ title: "A: Unable to release", message: "", type: "error" }),
+      addNotificationAtRender({
+        title: "A: Unable to release",
+        message: "",
+        type: "error",
+      }),
   });
   const pending = release.mutate().catch(() => {});
   await settle();
@@ -620,9 +676,16 @@ test("User A's request failing after logout shows no toast, then or for User B",
   await app.auth.getState().login(TOKEN_B);
   await settle();
   notify(app.notifications, "B: order ready");
-  addNotificationAtRender({ title: "A: Time extended", message: "", type: "success" });
+  addNotificationAtRender({
+    title: "A: Time extended",
+    message: "",
+    type: "success",
+  });
 
-  assert.deepEqual(toastTitles(app.notifications), { visible: ["B: order ready"], queue: [] });
+  assert.deepEqual(toastTitles(app.notifications), {
+    visible: ["B: order ready"],
+    queue: [],
+  });
   assert.deepEqual(historyTitles(app.notifications), ["B: order ready"]);
   await app.auth.getState().logout();
 });
@@ -635,7 +698,10 @@ test("a stale dismiss from User A's toast doesn't affect User B's toasts", async
   await settle();
   for (const n of [1, 2, 3, 4]) {
     app.notifications.getState().addNotification({
-      title: `B${n}`, message: "", type: "info", orderId: `b${n}`,
+      title: `B${n}`,
+      message: "",
+      type: "info",
+      orderId: `b${n}`,
     });
   }
 
@@ -662,7 +728,10 @@ test("toasts still show, queue and dismiss normally while logged in", async () =
   });
   // Re-rendered screens get the current addNotification, which still works
   app.notifications.getState().addNotification({
-    title: "A5", message: "", type: "info", orderId: "a5",
+    title: "A5",
+    message: "",
+    type: "info",
+    orderId: "a5",
   });
   assert.deepEqual(toastTitles(app.notifications).queue, ["A5"]);
   // Pull-to-refresh re-runs initialize(): same session, toasts untouched

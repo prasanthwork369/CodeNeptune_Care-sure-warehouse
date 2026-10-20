@@ -4,7 +4,10 @@ import Module from "node:module";
 
 // Startup as app/_layout.tsx runs it: real useAuthStore.initialize(),
 // initNetworkListener and requestQueue. Only native modules are replaced.
-type NetState = { isConnected: boolean | null; isInternetReachable: boolean | null };
+type NetState = {
+  isConnected: boolean | null;
+  isInternetReachable: boolean | null;
+};
 const ONLINE: NetState = { isConnected: true, isInternetReachable: true };
 const OFFLINE: NetState = { isConnected: false, isInternetReachable: false };
 

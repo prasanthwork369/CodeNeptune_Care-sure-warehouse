@@ -33,19 +33,40 @@ const baseApiOrder: ApiOrder = {
 };
 
 test("1. isOrderAlreadyChecked returns true for rawStatus 5 (ORDER_STATUS.CHECKED)", () => {
-  assert.equal(isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.CHECKED }), true);
+  assert.equal(
+    isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.CHECKED }),
+    true,
+  );
   assert.equal(isOrderAlreadyChecked({ rawStatus: 5 }), true);
 });
 
 test("2. isOrderAlreadyChecked returns false for other order statuses", () => {
   // Not yet checked / other workflow states
   assert.equal(isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.NEW }), false);
-  assert.equal(isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.DOCTOR_APPROVED }), false);
-  assert.equal(isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.PHARMACIST_APPROVED }), false);
-  assert.equal(isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.PICKED }), false);
-  assert.equal(isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.PARTIALLY_PICKED }), false);
-  assert.equal(isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.PACKED }), false);
-  assert.equal(isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.CANCELLED }), false);
+  assert.equal(
+    isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.DOCTOR_APPROVED }),
+    false,
+  );
+  assert.equal(
+    isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.PHARMACIST_APPROVED }),
+    false,
+  );
+  assert.equal(
+    isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.PICKED }),
+    false,
+  );
+  assert.equal(
+    isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.PARTIALLY_PICKED }),
+    false,
+  );
+  assert.equal(
+    isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.PACKED }),
+    false,
+  );
+  assert.equal(
+    isOrderAlreadyChecked({ rawStatus: ORDER_STATUS.CANCELLED }),
+    false,
+  );
   assert.equal(isOrderAlreadyChecked(null), false);
   assert.equal(isOrderAlreadyChecked(undefined), false);
 });
@@ -126,5 +147,8 @@ test("7. OrderSummaryLayout source contains required already-checked UI strings 
   assert.match(source, /isOrderAlreadyChecked\(order\)/);
   // Retains original Order Not Ready
   assert.match(source, /Order Not Ready/);
-  assert.match(source, /This order has not been checked yet and cannot be packed\./);
+  assert.match(
+    source,
+    /This order has not been checked yet and cannot be packed\./,
+  );
 });

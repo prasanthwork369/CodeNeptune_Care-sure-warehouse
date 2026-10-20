@@ -22,9 +22,9 @@ export interface AllDispatcherOrdersLayoutProps {
   initialTab?: "dispatched" | "pending";
 }
 
-export const AllDispatcherOrdersLayout: React.FC<AllDispatcherOrdersLayoutProps> = ({
-  initialTab,
-}) => {
+export const AllDispatcherOrdersLayout: React.FC<
+  AllDispatcherOrdersLayoutProps
+> = ({ initialTab }) => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"dispatched" | "pending">(
