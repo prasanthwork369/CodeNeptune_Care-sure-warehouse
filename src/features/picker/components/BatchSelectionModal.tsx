@@ -16,6 +16,7 @@ import { OrderItem, BatchRow } from "@/src/features/picker/types/order.types";
 import { validateBatches } from "@/src/features/picker/services/batch.validation";
 import {
   applyBatchSelection,
+  applyQuantityChange,
   isSystemAssignedRow,
 } from "@/src/features/picker/services/batch.selection";
 import {
@@ -92,18 +93,16 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
     );
   };
 
-  const updateBatch = (id: string, field: keyof BatchRow, value: string) => {
-    setBatches((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, [field]: value } : b)),
-    );
+  const orderedQty = item?.requiredQty ?? 0;
+
+  const updateQuantity = (id: string, value: string) => {
+    setBatches((prev) => applyQuantityChange(prev, id, value, orderedQty));
   };
 
   const selectBatch = (rowId: string, batch: InventoryBatch) => {
-    setBatches((prev) => applyBatchSelection(prev, rowId, batch));
+    setBatches((prev) => applyBatchSelection(prev, rowId, batch, orderedQty));
     setOpenDropdownId(null);
   };
-
-  const orderedQty = item?.requiredQty ?? 0;
   const validation = validateBatches(batches, orderedQty);
   const canSave = validation.isValid;
   const exceedsOrdered = validation.error === "EXCEEDS_ORDERED";
@@ -308,13 +307,7 @@ const BatchSelectionModal: React.FC<BatchSelectionModalProps> = ({
                           color: colors.text.DEFAULT,
                         }}
                         value={batch.quantity}
-                        onChangeText={(val) =>
-                          updateBatch(
-                            batch.id,
-                            "quantity",
-                            val.replace(/[^0-9]/g, ""),
-                          )
-                        }
+                        onChangeText={(val) => updateQuantity(batch.id, val)}
                         keyboardType="numeric"
                         maxLength={4}
                       />
