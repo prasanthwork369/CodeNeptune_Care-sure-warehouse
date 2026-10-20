@@ -16,6 +16,7 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
+        sceneStyle: { backgroundColor: "#FFFFFF" },
       }}
     >
       {tabs.map((tab) => (

@@ -14,14 +14,14 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
   runOnJS,
   runOnUI,
   SharedValue,
   Extrapolation,
-  cancelAnimation,
+  Easing,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
 
@@ -34,6 +34,10 @@ const INACTIVE_ICON_COLOR = "#969696";
 const SNAP_SPRING = { damping: 28, stiffness: 420, mass: 0.5 } as const;
 // Trailing spring for the liquid stretch effect
 const TRAIL_SPRING = { damping: 22, stiffness: 320, mass: 0.6 } as const;
+const TAP_TIMING = {
+  duration: 120,
+  easing: Easing.out(Easing.cubic),
+} as const;
 
 const AnimatedText = Animated.createAnimatedComponent(Text);
 
@@ -72,6 +76,12 @@ const FloatingTabBar = ({
     runOnUI(() => {
       "worklet";
       isInteracting.value = 0;
+
+      // A tap/drag already starts this transition optimistically. Do not
+      // restart the same springs when React Navigation confirms the route,
+      // otherwise the pill visibly hitches midway through its movement.
+      if (activeIndexSV.value === idx) return;
+
       activeIndexSV.value = idx;
       leaderX.value = withSpring(idx, SNAP_SPRING);
       followerX.value = withSpring(idx, TRAIL_SPRING);
@@ -97,6 +107,7 @@ const FloatingTabBar = ({
       if (!isTabAccessible(route.name)) {
         runOnUI(() => {
           "worklet";
+          activeIndexSV.value = state.index;
           leaderX.value = withSpring(state.index, SNAP_SPRING);
           followerX.value = withSpring(state.index, TRAIL_SPRING);
         })();
@@ -125,6 +136,7 @@ const FloatingTabBar = ({
             0,
             Math.min(state.routes.length - 1, (e.x - 16) / tw),
           );
+          activeIndexSV.value = Math.round(clamped);
           leaderX.value = clamped;
           followerX.value = withSpring(clamped, TRAIL_SPRING);
         })
@@ -134,6 +146,9 @@ const FloatingTabBar = ({
             state.routes.length - 1,
             Math.max(0, Math.round(leaderX.value)),
           );
+          // Update the active icon immediately instead of waiting for the
+          // navigation state to make a round trip through the JS thread.
+          activeIndexSV.value = final;
           leaderX.value = withSpring(final, SNAP_SPRING);
           followerX.value = withSpring(final, TRAIL_SPRING);
           runOnJS(navigateToTab)(final);
@@ -161,8 +176,14 @@ const FloatingTabBar = ({
             state.routes.length - 1,
             Math.max(0, Math.floor((e.x - 16) / tw)),
           );
-          leaderX.value = withSpring(final, SNAP_SPRING);
-          followerX.value = withSpring(final, TRAIL_SPRING);
+          // Keep the icon/label selection in lockstep with the pill. Without
+          // this, onFinalize briefly paints the previous tab black.
+          activeIndexSV.value = final;
+          // A tap should travel as one stable pill. The different leader and
+          // follower springs are reserved for dragging, where stretching is
+          // intentional; on taps they feel like overshoot and input lag.
+          leaderX.value = withTiming(final, TAP_TIMING);
+          followerX.value = withTiming(final, TAP_TIMING);
           runOnJS(navigateToTab)(final);
         })
         .onFinalize(() => {
@@ -222,9 +243,7 @@ const FloatingTabBar = ({
         }
       >
         <GestureDetector gesture={combinedGesture}>
-          <BlurView
-            intensity={80}
-            tint="dark"
+          <View
             onLayout={onLayout}
             style={{
               backgroundColor: BAR_COLOR,
@@ -274,14 +293,12 @@ const FloatingTabBar = ({
                   index={index}
                   icon={tab.icon}
                   label={tab.title}
-                  followerX={followerX}
                   activeIndexSV={activeIndexSV}
-                  isInteracting={isInteracting}
                   accessible={isTabAccessible(route.name)}
                 />
               );
             })}
-          </BlurView>
+          </View>
         </GestureDetector>
       </View>
     </>
@@ -297,9 +314,7 @@ interface TabItemProps {
   }>;
   index: number;
   label: string;
-  followerX: SharedValue<number>;
   activeIndexSV: SharedValue<number>;
-  isInteracting: SharedValue<number>;
   accessible?: boolean;
 }
 
@@ -308,9 +323,7 @@ const TabItem = React.memo(
     icon: Icon,
     index,
     label,
-    followerX,
     activeIndexSV,
-    isInteracting,
     accessible = true,
   }: TabItemProps) => {
     const AnimatedIcon = useMemo(
@@ -320,12 +333,7 @@ const TabItem = React.memo(
 
     const animatedTextStyle = useAnimatedStyle(() => {
       "worklet";
-      const distance =
-        isInteracting.value === 1
-          ? Math.abs(followerX.value - index)
-          : activeIndexSV.value === index
-            ? 0
-            : 1;
+      const distance = activeIndexSV.value === index ? 0 : 1;
       const scale = interpolate(
         distance,
         [0, 0.35],
@@ -342,12 +350,7 @@ const TabItem = React.memo(
 
     const animatedIconProps = useAnimatedProps(() => {
       "worklet";
-      const distance =
-        isInteracting.value === 1
-          ? Math.abs(followerX.value - index)
-          : activeIndexSV.value === index
-            ? 0
-            : 1;
+      const distance = activeIndexSV.value === index ? 0 : 1;
       const color = interpolateColor(
         distance,
         [0, 0.3],
