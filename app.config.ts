@@ -3,7 +3,7 @@ import type { ConfigContext, ExpoConfig } from "expo/config";
 
 // Gradle's Expo steps can read this config without loading .env files.
 // This never overrides variables already supplied by EAS.
-loadEnv(__dirname, { silent: true });
+loadEnv(process.cwd(), { silent: true });
 
 const APP_ENVS = ["development", "preview", "production"];
 const appEnv = process.env.EXPO_PUBLIC_APP_ENV ?? "development";

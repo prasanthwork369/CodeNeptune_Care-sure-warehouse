@@ -17,7 +17,9 @@
       },
       "package": "com.codeneptune.warehouse",
       "predictiveBackGestureEnabled": false,
-      "permissions": ["android.permission.CAMERA"]
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "output": "static",
@@ -57,10 +59,16 @@
       "reactCompiler": true
     },
     "extra": {
-      "router": {},
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "appEnv": "development",
       "eas": {
-        "projectId": "d231edd9-1948-45fb-90f9-875e06ba3bb0"
+        "projectId": "875ee3fe-8ac5-4d77-b148-bbb2880cc38d"
       }
-    }
+    },
+    "owner": "codeneptunes-team"
   }
 }
