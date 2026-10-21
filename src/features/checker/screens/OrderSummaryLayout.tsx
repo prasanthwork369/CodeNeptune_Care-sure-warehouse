@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -11,12 +11,16 @@ import { Order, OrderItem } from "@/src/features/picker/types/order.types";
 import { orderService } from "@/src/features/picker/services/order.service";
 import { fulfillmentApi } from "@/src/features/picker/api/fulfillment.api";
 import { useUserQuery } from "@/src/features/profile/hooks/useUser";
+import { useNetworkStore } from "@/src/store/useNetworkStore";
 import AppLoader from "@/src/components/common/AppLoader";
 import ErrorModal from "@/src/components/common/ErrorModal";
 import BackButton from "@/src/components/common/BackButton";
 import ItemEditModal from "../components/ItemEditModal";
 import GetInvoiceModal from "@/src/components/common/GetInvoiceModal";
-import { isOrderAlreadyChecked } from "../utils/checkerStatus";
+import {
+  canStartChecking,
+  isOrderAlreadyChecked,
+} from "../utils/checkerStatus";
 
 export interface OrderSummaryLayoutProps {
   orderId: string;
@@ -53,6 +57,20 @@ export const OrderSummaryLayout: React.FC<OrderSummaryLayoutProps> = ({
   useEffect(() => {
     loadOrder();
   }, [orderId]);
+
+  // Step timing: mark the checking start once per screen mount. Fire-and-forget
+  // and silent; skipped offline, where apiClient would show its offline alert.
+  // The ref also absorbs Strict Mode's repeated effect run.
+  const packStartSentFor = useRef<string | null>(null);
+  useEffect(() => {
+    if (!order || !canStartChecking(order)) return;
+    if (packStartSentFor.current === order.id) return;
+    if (useNetworkStore.getState().isConnected === false) return;
+    packStartSentFor.current = order.id;
+    fulfillmentApi.startPack(order.id).catch((err) => {
+      if (__DEV__) console.warn("[Pack start] Failed:", err?.message);
+    });
+  }, [order]);
 
   const loadOrder = async () => {
     try {

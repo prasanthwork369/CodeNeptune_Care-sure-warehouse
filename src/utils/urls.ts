@@ -68,6 +68,8 @@ export const API_ENDPOINTS = {
   // Packing
   FULFILLMENT_PACK: (orderId: string) =>
     `/api/v1/fulfillment/orders/${orderId}/pack`,
+  FULFILLMENT_PACK_START: (orderId: string) =>
+    `/api/v1/fulfillment/orders/${orderId}/pack/start`,
 
   FULFILLMENT_QUALITY_CHECKS: (orderId: string) =>
     `/api/v1/fulfillment/orders/${orderId}/quality-checks`,
@@ -89,6 +91,8 @@ export const API_ENDPOINTS = {
     `/api/v1/orders/staff/dispatcher-queue/${orderId}`,
   FULFILLMENT_DISPATCH: (orderId: string) =>
     `/api/v1/fulfillment/orders/${orderId}/dispatch`,
+  FULFILLMENT_DISPATCH_START: (orderId: string) =>
+    `/api/v1/fulfillment/orders/${orderId}/dispatch/start`,
   FULFILLMENT_REJECT_DISPATCH: (orderId: string) =>
     `/api/v1/fulfillment/orders/${orderId}/reject-dispatch`,
 };

@@ -6,6 +6,7 @@ import {
   isDispatchEventOn,
   isDispatchedOrder,
   isDispatchFailedOrder,
+  isReadyForDispatch,
 } from "../utils/dispatcherFilters";
 
 const today = new Date(2026, 9, 15, 12);
@@ -119,4 +120,23 @@ test("orders dispatched on an earlier day are excluded from today", () => {
 test("empty API response gives empty sections", () => {
   assert.equal(dispatchedToday([]).length, 0);
   assert.equal(failedToday([]).length, 0);
+});
+
+test("isReadyForDispatch is true only for PACKED (14)", () => {
+  assert.equal(isReadyForDispatch(order({ status: 14 })), true);
+  // String status from the API is coerced the same way the screen does
+  assert.equal(isReadyForDispatch(order({ status: "14" as any })), true);
+});
+
+test("isReadyForDispatch skips history and every other status", () => {
+  // 6 SHIPPED, 7 DELIVERED, 12 DISPATCHER_CANCEL are dispatcher history
+  for (const status of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]) {
+    assert.equal(
+      isReadyForDispatch(order({ status })),
+      false,
+      `status ${status}`,
+    );
+  }
+  assert.equal(isReadyForDispatch(null), false);
+  assert.equal(isReadyForDispatch(undefined), false);
 });

@@ -15,6 +15,10 @@ export const isDispatchedOrder = (o: ApiOrder) =>
 export const isDispatchFailedOrder = (o: ApiOrder) =>
   Number(o.status) === ORDER_STATUS.DISPATCHER_CANCEL;
 
+// Only a PACKED order can be dispatched; history orders (6, 7, 12) are not
+export const isReadyForDispatch = (o: ApiOrder | null | undefined) =>
+  Number(o?.status) === ORDER_STATUS.PACKED;
+
 /**
  * When the order reached its dispatcher outcome: the latest status log into
  * SHIPPED (for dispatched orders) or DISPATCHER_CANCEL (for failed ones), else

@@ -35,6 +35,15 @@ export const dispatcherApi = {
     console.log("✅ [Dispatcher API] Dispatched successfully:", orderId);
   },
 
+  // Step-timing marker. _queued: a start time replayed later would be wrong
+  startDispatch: async (orderId: string): Promise<void> => {
+    await apiClient.post(
+      API_ENDPOINTS.FULFILLMENT_DISPATCH_START(orderId),
+      undefined,
+      { _queued: true } as any,
+    );
+  },
+
   rejectDispatch: async (orderId: string, reason: string): Promise<void> => {
     console.log(
       "❌ [Dispatcher API] Rejecting dispatch for order:",

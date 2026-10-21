@@ -27,3 +27,12 @@ export const isOrderAlreadyChecked = (
   }
   return false;
 };
+
+/**
+ * Whether OrderSummaryLayout shows the checking UI for this order — the same
+ * gates it renders with: found, not already CHECKED, and 'partial' (PICKED).
+ */
+export const canStartChecking = (
+  order: CheckableOrder | null | undefined,
+): boolean =>
+  !!order && !isOrderAlreadyChecked(order) && order.status === "partial";

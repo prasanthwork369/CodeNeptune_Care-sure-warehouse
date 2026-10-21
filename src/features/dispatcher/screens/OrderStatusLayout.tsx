@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -26,6 +26,8 @@ import { icons } from "@/src/constants/icons";
 import { colors } from "@/src/theme/colors";
 import { formatOrderDate } from "@/src/utils/dateUtils";
 import CancelDispatchModal from "../components/CancelDispatchModal";
+import { isReadyForDispatch } from "../utils/dispatcherFilters";
+import { useNetworkStore } from "@/src/store/useNetworkStore";
 
 export interface OrderStatusLayoutProps {
   orderId?: string;
@@ -84,6 +86,20 @@ export const OrderStatusLayout: React.FC<OrderStatusLayoutProps> = ({
       });
     }
   }, [apiOrder, rawStatus, isReady, isCancelled, order?.customerName]);
+
+  // Step timing: mark the dispatch start once per screen mount, PACKED orders
+  // only. Fire-and-forget and silent; skipped offline, where apiClient would
+  // show its offline alert. The ref also absorbs Strict Mode's repeated run.
+  const dispatchStartSentFor = useRef<string | null>(null);
+  useEffect(() => {
+    if (!apiOrder || !isReadyForDispatch(apiOrder)) return;
+    if (dispatchStartSentFor.current === apiOrder.id) return;
+    if (useNetworkStore.getState().isConnected === false) return;
+    dispatchStartSentFor.current = apiOrder.id;
+    dispatcherApi.startDispatch(apiOrder.id).catch((err) => {
+      if (__DEV__) console.warn("[Dispatch start] Failed:", err?.message);
+    });
+  }, [apiOrder]);
 
   // ── Dispatch ─────────────────────────────────────────────────────────────
   const { mutateAsync: doDispatch, isPending: isDispatching } = useMutation({

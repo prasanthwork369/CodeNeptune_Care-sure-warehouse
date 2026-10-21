@@ -5,7 +5,10 @@ import { join } from "node:path";
 import { ORDER_STATUS } from "@/src/features/picker/constants/order.constants";
 import { mapOrder } from "@/src/features/picker/services/order.mapper";
 import { ApiOrder } from "@/src/features/picker/types/order.types";
-import { isOrderAlreadyChecked } from "../utils/checkerStatus";
+import {
+  canStartChecking,
+  isOrderAlreadyChecked,
+} from "../utils/checkerStatus";
 
 const baseApiOrder: ApiOrder = {
   id: "order-test-1",
@@ -150,5 +153,47 @@ test("7. OrderSummaryLayout source contains required already-checked UI strings 
   assert.match(
     source,
     /This order has not been checked yet and cannot be packed\./,
+  );
+});
+
+test("8. canStartChecking is true only for PICKED / PARTIALLY_PICKED orders", () => {
+  for (const status of [ORDER_STATUS.PICKED, ORDER_STATUS.PARTIALLY_PICKED]) {
+    assert.equal(
+      canStartChecking(mapOrder({ ...baseApiOrder, status })),
+      true,
+      `status ${status}`,
+    );
+  }
+});
+
+test("9. canStartChecking skips missing, already-checked and ineligible orders", () => {
+  assert.equal(canStartChecking(null), false);
+  assert.equal(canStartChecking(undefined), false);
+  for (const status of [
+    ORDER_STATUS.CHECKED,
+    ORDER_STATUS.NEW,
+    ORDER_STATUS.PHARMACIST_APPROVED,
+    ORDER_STATUS.PACKED,
+    ORDER_STATUS.SHIPPED,
+    ORDER_STATUS.DELIVERED,
+    ORDER_STATUS.CANCELLED,
+  ]) {
+    assert.equal(
+      canStartChecking(mapOrder({ ...baseApiOrder, status })),
+      false,
+      `status ${status}`,
+    );
+  }
+});
+
+test("10. canStartChecking skips an order whose status logs end in CHECKED", () => {
+  assert.equal(
+    canStartChecking({
+      status: "partial",
+      statusLogs: [
+        { fromStatus: 4, toStatus: 5, createdAt: "2026-10-08T05:00:00Z" },
+      ],
+    }),
+    false,
   );
 });

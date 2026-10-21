@@ -57,6 +57,15 @@ export const fulfillmentApi = {
     );
   },
 
+  // Step-timing marker. _queued: a start time replayed later would be wrong
+  startPack: async (orderId: string): Promise<void> => {
+    await apiClient.post(
+      API_ENDPOINTS.FULFILLMENT_PACK_START(orderId),
+      undefined,
+      { _queued: true } as any,
+    );
+  },
+
   submitQualityChecks: async (
     orderId: string,
     checks: Array<{ orderItemId: string; reason: string; notes?: string }>,
